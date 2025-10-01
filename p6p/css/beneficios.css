@@ -1,0 +1,429 @@
+/* Hereda estilos base */
+@import url('cargos-sanciones.css');
+
+/* Header específico */
+.beneficios-header {
+    background: linear-gradient(135deg, #ff9800 0%, #e65100 100%);
+    border-bottom: 3px solid #ff9800;
+}
+
+/* Estadísticas generales */
+.estadisticas-generales {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.stat-card {
+    background: white;
+    border-radius: 15px;
+    padding: 25px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    border-left: 5px solid #ff9800;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.stat-card.deudores {
+    border-left-color: #f44336;
+}
+
+.stat-icon {
+    font-size: 3rem;
+    opacity: 0.8;
+}
+
+.stat-info h3 {
+    color: #666;
+    font-size: 0.9rem;
+    margin-bottom: 8px;
+    font-weight: 500;
+    text-transform: uppercase;
+}
+
+.stat-numero {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #ff9800;
+    margin: 0;
+}
+
+.stat-card.deudores .stat-numero {
+    color: #f44336;
+}
+
+/* Botón de beneficio */
+.btn-beneficio {
+    background: linear-gradient(135deg, #ff9800 0%, #e65100 100%);
+    color: white;
+    box-shadow: 0 5px 20px rgba(255, 152, 0, 0.3);
+}
+
+.btn-beneficio:hover {
+    background: linear-gradient(135deg, #ffb74d 0%, #ff8f00 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(255, 152, 0, 0.4);
+}
+
+/* Grid de categorías */
+.categorias-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 10px;
+    border: 2px solid #e0e0e0;
+}
+
+.categoria-input {
+    display: flex;
+    flex-direction: column;
+}
+
+.categoria-input label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #333;
+}
+
+.categoria-input input {
+    padding: 10px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.categoria-input input:focus {
+    outline: none;
+    border-color: #ff9800;
+    box-shadow: 0 0 0 3px rgba(255, 152, 0, 0.2);
+}
+
+/* Tarjetas de beneficios */
+.beneficio-card {
+    background: white;
+    padding: 25px;
+    margin: 15px 0;
+    border-radius: 10px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+    border-left: 5px solid #ff9800;
+}
+
+.beneficio-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.beneficio-titulo {
+    flex: 1;
+}
+
+.beneficio-nombre {
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: #ff9800;
+    margin-bottom: 5px;
+}
+
+.beneficio-tipo {
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.beneficio-estado {
+    padding: 8px 20px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.beneficio-estado.activo {
+    background: #4caf50;
+    color: white;
+}
+
+.beneficio-estado.cerrado {
+    background: #9e9e9e;
+    color: white;
+}
+
+.beneficio-estado.vencido {
+    background: #f44336;
+    color: white;
+}
+
+.beneficio-acciones {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.btn-ver-detalle {
+    background: linear-gradient(135deg, #2196f3 0%, #1565c0 100%);
+    color: white;
+    padding: 8px 15px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: all 0.3s ease;
+}
+
+.btn-ver-detalle:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(33, 150, 243, 0.3);
+}
+
+.btn-ver-deudores {
+    background: linear-gradient(135deg, #f44336 0%, #d32f2f 100%);
+    color: white;
+    padding: 8px 15px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: all 0.3s ease;
+}
+
+.btn-ver-deudores:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(244, 67, 54, 0.3);
+}
+
+.btn-cerrar-beneficio {
+    background: linear-gradient(135deg, #9e9e9e 0%, #616161 100%);
+    color: white;
+    padding: 8px 15px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: all 0.3s ease;
+}
+
+.btn-cerrar-beneficio:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(158, 158, 158, 0.3);
+}
+
+/* Resumen de beneficio */
+.beneficio-resumen {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.resumen-item {
+    background: #f8f9fa;
+    padding: 12px;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.resumen-item-label {
+    font-size: 0.8rem;
+    color: #666;
+    margin-bottom: 5px;
+}
+
+.resumen-item-valor {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #333;
+}
+
+/* Detalle expandible */
+.beneficio-detalle {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 20px;
+    margin-top: 15px;
+    display: none;
+}
+
+.beneficio-detalle.expanded {
+    display: block;
+    animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.detalle-section {
+    margin-bottom: 20px;
+}
+
+.detalle-section h4 {
+    color: #ff9800;
+    margin-bottom: 15px;
+    font-size: 1.1rem;
+}
+
+.detalle-tabla {
+    width: 100%;
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.detalle-tabla table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.detalle-tabla th {
+    background: #ff9800;
+    color: white;
+    padding: 12px;
+    text-align: left;
+    font-weight: 600;
+}
+
+.detalle-tabla td {
+    padding: 12px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.detalle-tabla tr:last-child td {
+    border-bottom: none;
+}
+
+.detalle-tabla tr:hover {
+    background: #f8f9fa;
+}
+
+.estado-pago {
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.estado-pago.pagado {
+    background: #4caf50;
+    color: white;
+}
+
+.estado-pago.pendiente {
+    background: #f44336;
+    color: white;
+}
+
+.estado-pago.parcial {
+    background: #ff9800;
+    color: white;
+}
+
+/* Gráfico de deudores */
+.grafico-container {
+    background: white;
+    border-radius: 15px;
+    padding: 30px;
+    margin-bottom: 30px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.grafico-container h3 {
+    text-align: center;
+    margin-bottom: 25px;
+    color: #333;
+    font-size: 1.3rem;
+}
+
+#graficoDeudores {
+    max-height: 400px;
+}
+
+/* Lista de deudores */
+.lista-deudores {
+    background: white;
+    border-radius: 10px;
+    padding: 20px;
+    margin-top: 20px;
+}
+
+.deudor-item {
+    background: #fff3f3;
+    border-left: 4px solid #f44336;
+    padding: 15px;
+    margin: 10px 0;
+    border-radius: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.deudor-info h5 {
+    color: #f44336;
+    margin-bottom: 5px;
+}
+
+.deudor-info p {
+    color: #666;
+    font-size: 0.9rem;
+    margin: 3px 0;
+}
+
+.deudor-monto {
+    font-size: 1.3rem;
+    font-weight: bold;
+    color: #f44336;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .estadisticas-generales {
+        grid-template-columns: 1fr;
+    }
+    
+    .categorias-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .beneficio-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .beneficio-acciones {
+        width: 100%;
+        justify-content: stretch;
+    }
+    
+    .beneficio-acciones button {
+        flex: 1;
+    }
+    
+    .beneficio-resumen {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .detalle-tabla {
+        overflow-x: auto;
+    }
+}
