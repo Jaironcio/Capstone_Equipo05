@@ -1,0 +1,111 @@
+/* Hereda estilos base */
+@import url('cargos-sanciones.css');
+
+/* Header específico */
+.cuotas-header {
+    background: linear-gradient(135deg, #9c27b0 0%, #6a1b9a 100%);
+    border-bottom: 3px solid #9c27b0;
+}
+
+/* Botón de cuota */
+.btn-cuota {
+    background: linear-gradient(135deg, #9c27b0 0%, #6a1b9a 100%);
+    color: white;
+}
+
+.btn-cuota:hover {
+    background: linear-gradient(135deg, #ab47bc 0%, #7b1fa2 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 20px rgba(156, 39, 176, 0.4);
+}
+
+/* Grid de meses */
+.cuotas-grid {
+    background: #f8f9fa;
+    border: 2px solid #e0e0e0;
+    border-radius: 15px;
+    padding: 25px;
+    margin-bottom: 30px;
+}
+
+.cuotas-grid h3 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.meses-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 15px;
+}
+
+.mes-card {
+    background: white;
+    padding: 15px;
+    border-radius: 10px;
+    text-align: center;
+    border: 2px solid #e0e0e0;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.mes-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.mes-card.pagado {
+    background: linear-gradient(135deg, #4caf50 0%, #2e7d32 100%);
+    color: white;
+    border-color: #4caf50;
+}
+
+.mes-card.pendiente {
+    background: linear-gradient(135deg, #f44336 0%, #d32f2f 100%);
+    color: white;
+    border-color: #f44336;
+}
+
+.mes-nombre {
+    font-weight: 600;
+    font-size: 1rem;
+    margin-bottom: 5px;
+}
+
+.mes-estado {
+    font-size: 0.85rem;
+    opacity: 0.9;
+}
+
+/* Tarjeta de pago */
+.pago-card {
+    background: white;
+    padding: 20px;
+    margin: 15px 0;
+    border-radius: 10px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+    border-left: 5px solid #9c27b0;
+}
+
+.pago-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.pago-monto {
+    font-size: 1.3rem;
+    font-weight: bold;
+    color: #4caf50;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .meses-grid {
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    }
+}

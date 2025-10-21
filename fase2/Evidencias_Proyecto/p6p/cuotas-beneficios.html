@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proyecto SEIS - Cuotas Sociales</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <link rel="stylesheet" href="css/cuotas.css">
+</head>
+<body>
+    <div class="page-container cuotas-page">
+        <div class="container">
+            <div class="page-header cuotas-header">
+                <h2>💳 SISTEMA DE CUOTAS SOCIALES</h2>
+                <p>Control de Pagos Mensuales</p>
+            </div>
+
+            <div class="page-content">
+                <div id="mensajeCuotas" class="mensaje-global" style="display: none;"></div>
+
+                <!-- Información del Bombero -->
+                <div class="bombero-info">
+                    <h3>Información del Voluntario</h3>
+                    <div class="bombero-datos" id="bomberoDatosCuotas"></div>
+                </div>
+
+                <!-- Formulario Cuota Social -->
+                <div class="form-container">
+                    <h3>💰 Registrar Pago de Cuota Social</h3>
+                    
+                    <form id="formCuotaSocial">
+                        <input type="hidden" id="bomberoCuotaId" name="bomberoCuotaId">
+                        
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="tipoCuota" class="required">Tipo de Cuota</label>
+                                <select id="tipoCuota" name="tipoCuota" required onchange="cuotasSistema.cambioTipoCuota()">
+                                    <option value="">Seleccione tipo</option>
+                                    <option value="regular">Cuota Regular - $5.000</option>
+                                    <option value="estudiante">Cuota Estudiante - $3.000</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="montoCuota" class="required">Monto (CLP)</label>
+                                <input type="number" id="montoCuota" name="montoCuota" required min="1000" 
+                                       placeholder="Monto de la cuota" readonly>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="mesCuota" class="required">Mes de Pago</label>
+                                <select id="mesCuota" name="mesCuota" required>
+                                    <option value="">Seleccione mes</option>
+                                    <option value="1">Enero</option>
+                                    <option value="2">Febrero</option>
+                                    <option value="3">Marzo</option>
+                                    <option value="4">Abril</option>
+                                    <option value="5">Mayo</option>
+                                    <option value="6">Junio</option>
+                                    <option value="7">Julio</option>
+                                    <option value="8">Agosto</option>
+                                    <option value="9">Septiembre</option>
+                                    <option value="10">Octubre</option>
+                                    <option value="11">Noviembre</option>
+                                    <option value="12">Diciembre</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="anioCuota" class="required">Año</label>
+                                <input type="number" id="anioCuota" name="anioCuota" required 
+                                       min="2020" max="2030" value="2025">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="fechaPagoCuota" class="required">Fecha de Pago</label>
+                                <input type="date" id="fechaPagoCuota" name="fechaPagoCuota" required>
+                            </div>
+
+                            <div class="form-group full-width">
+                                <label for="observacionesCuota" class="opcional">Observaciones</label>
+                                <textarea id="observacionesCuota" name="observacionesCuota" rows="2" 
+                                          placeholder="Observaciones adicionales (opcional)"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="buttons">
+                            <button type="submit" class="btn btn-cuota">✅ Registrar Pago de Cuota</button>
+                            <button type="button" class="btn btn-secondary" onclick="cuotasSistema.limpiarFormulario()">Limpiar</button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Grid de Meses -->
+                <div class="cuotas-grid">
+                    <h3>📊 Estado de Cuotas del Año <span id="anioActualCuotas">2025</span></h3>
+                    <div id="gridMesesCuotas" class="meses-grid"></div>
+                </div>
+
+                <!-- Historial de Cuotas -->
+                <div class="list-container">
+                    <div class="list-header">
+                        <h3>📚 Historial de Pagos de Cuotas</h3>
+                        <button type="button" class="btn btn-excel" onclick="cuotasSistema.exportarExcel()">
+                            📊 Descargar Excel
+                        </button>
+                    </div>
+                    
+                    <div class="contador">
+                        Total de pagos: <strong id="totalPagosCuotas">0</strong>
+                    </div>
+                    
+                    <div id="listaCuotas" class="lista-items"></div>
+                </div>
+
+                <div class="navigation-buttons">
+                    <button type="button" class="btn btn-volver" onclick="cuotasSistema.volverAlSistema()">
+                        ← Regresar al Sistema Principal
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/auth.js"></script>
+    <script src="js/storage.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/cuotas.js"></script>
+</body>
+</html>
