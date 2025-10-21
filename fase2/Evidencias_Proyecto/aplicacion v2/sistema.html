@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proyecto SEIS - Sistema Principal</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+    <link rel="stylesheet" href="css/login.css">
+    <link rel="stylesheet" href="css/sistema.css">
+</head>
+<body>
+    <div class="main-system" id="mainSystem">
+        <div id="containerPrincipal" class="container">
+            <header class="main-header">
+                <div class="header-container">
+                    <div class="header-brand">
+                        <div class="brand-logo">🚒</div>
+                        <div class="brand-text">
+                            <h1>Proyecto SEIS</h1>
+                            <p>Sistema de Registro de Bomberos</p>
+                        </div>
+                    </div>
+
+                    <div class="header-panel">
+                        <div id="saldoCompaniaHeader" class="widget-saldo" style="display: none;">
+                            <span class="widget-label">Saldo Compañía</span>
+                            <span class="widget-value" id="saldoMontoHeader">$0</span>
+                        </div>
+
+                        <div class="header-buttons">
+                            <button class="header-btn btn-alert" id="btnDeudores" style="display: none;">
+                                <span class="btn-badge" id="cantidadDeudores">0</span>
+                                <span class="btn-label">Deudores</span>
+                            </button>
+
+                            <button class="header-btn btn-primary" id="btnBeneficios" style="display: none;">
+                                <span class="btn-icon">🎪</span>
+                                <span class="btn-label">Beneficios</span>
+                            </button>
+
+                            <button class="header-btn btn-success" id="btnFinanzas" style="display: none;">
+                                <span class="btn-icon">💰</span>
+                                <span class="btn-label">Finanzas</span>
+                            </button>
+                        </div>
+
+                        <div class="header-user">
+                            <div class="user-avatar">
+                                <span id="userInitials">T</span>
+                            </div>
+                            <div class="user-details">
+                                <div class="user-role" id="userRoleInfo">Tesorero</div>
+                                <button class="btn-logout-compact" id="logoutBtn">Cerrar Sesión</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <div class="form-container">
+                <div id="mensaje" class="success" style="display: none;"></div>
+                
+                <div id="modoEdicion" class="modo-edicion" style="display: none;">
+                    <h3>🔄 Modo Edición</h3>
+                    <p>Está editando el registro de: <strong id="nombreEditando"></strong></p>
+                    <button type="button" class="btn btn-secondary" onclick="sistemaBomberos.cancelarEdicion()">Cancelar Edición</button>
+                </div>
+                
+                <form id="formBombero">
+                    <input type="hidden" id="idEditando" name="idEditando">
+                    
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="claveBombero" class="required">Clave del Bombero</label>
+                            <input type="text" id="claveBombero" name="claveBombero" required 
+                                   placeholder="Ej: 618-A, 425-B, 123-C">
+                            <div class="error" id="error-claveBombero"></div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="nombre" class="required">Nombre Completo</label>
+                            <input type="text" id="nombre" name="nombre" required 
+                                   placeholder="Ingrese nombre completo">
+                            <div class="error" id="error-nombre"></div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="fechaNacimiento" class="required">Fecha de Nacimiento</label>
+                            <input type="date" id="fechaNacimiento" name="fechaNacimiento" required>
+                            <div class="error" id="error-fechaNacimiento"></div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="rut" class="required">RUT</label>
+                            <input type="text" id="rut" name="rut" required 
+                                   placeholder="12.345.678-9" maxlength="12">
+                            <span class="error" id="errorRut"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="profesion" class="required">Profesión u Oficio</label>
+                            <input type="text" id="profesion" name="profesion" required 
+                                   placeholder="Ingrese profesión u oficio">
+                            <div class="error" id="error-profesion"></div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="domicilio" class="required">Domicilio</label>
+                            <input type="text" id="domicilio" name="domicilio" required 
+                                   placeholder="Dirección completa">
+                            <div class="error" id="error-domicilio"></div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="nroRegistro" class="required">Número de Registro Nacional</label>
+                            <input type="text" id="nroRegistro" name="nroRegistro" required 
+                                   placeholder="Número de registro">
+                            <div class="error" id="error-nroRegistro"></div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="fechaIngreso" class="required">Fecha de Ingreso</label>
+                            <input type="date" id="fechaIngreso" name="fechaIngreso" required>
+                            <div class="error" id="error-fechaIngreso"></div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="compania" class="required">Compañía</label>
+                            <input type="text" id="compania" name="compania" required 
+                                   placeholder="Compañía de bomberos">
+                            <div class="error" id="error-compania"></div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="grupoSanguineo" class="required">Grupo Sanguíneo</label>
+                            <select id="grupoSanguineo" name="grupoSanguineo" required>
+                                <option value="">Seleccione grupo sanguíneo</option>
+                                <option value="A+">A+</option>
+                                <option value="A-">A-</option>
+                                <option value="B+">B+</option>
+                                <option value="B-">B-</option>
+                                <option value="AB+">AB+</option>
+                                <option value="AB-">AB-</option>
+                                <option value="O+">O+</option>
+                                <option value="O-">O-</option>
+                            </select>
+                            <div class="error" id="error-grupoSanguineo"></div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="telefono" class="required">Número de Teléfono</label>
+                            <input type="tel" id="telefono" name="telefono" required 
+                                   placeholder="+56 9 1234 5678">
+                            <div class="error" id="error-telefono"></div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="email" class="opcional">Correo Electrónico</label>
+                            <input type="email" id="email" name="email" 
+                                   placeholder="ejemplo@correo.com">
+                            <div class="error" id="error-email"></div>
+                        </div>
+
+                        <!-- ✅ CORREGIDO: ID y evento onchange -->
+                        <div class="form-group">
+                            <label for="fotoBombero" class="opcional">Fotografía</label>
+                            <input type="file" 
+                                   id="fotoBombero" 
+                                   name="fotoBombero" 
+                                   accept="image/*"
+                                   onchange="sistemaBomberos.previsualizarFoto(this)">
+                            <div id="previewFoto" style="margin-top: 10px;"></div>
+                            <div class="error" id="error-foto"></div>
+                        </div>
+
+                        <h3 class="section-title">Información Adicional (Opcional)</h3>
+
+                        <div class="form-group">
+                            <label for="otrosCuerpos" class="opcional">Otros Cuerpos de Bomberos</label>
+                            <input type="text" id="otrosCuerpos" name="otrosCuerpos" 
+                                   placeholder="Otros cuerpos donde ha servido">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="companiaOpcional" class="opcional">Compañía Adicional</label>
+                            <input type="text" id="companiaOpcional" name="companiaOpcional" 
+                                   placeholder="Compañía adicional">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="desde" class="opcional">Desde</label>
+                            <input type="date" id="desde" name="desde">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="hasta" class="opcional">Hasta</label>
+                            <input type="date" id="hasta" name="hasta">
+                        </div>
+                    </div>
+
+                    <div class="buttons">
+                        <button type="submit" class="btn btn-primary" id="btnSubmit">Registrar Bombero</button>
+                        <button type="button" class="btn btn-secondary" onclick="sistemaBomberos.limpiarFormulario()">Limpiar Formulario</button>
+                    </div>
+                </form>
+
+                <div class="registros">
+                  <div class="registros-header">
+    <h3>Bomberos Registrados</h3>
+    <div class="registros-buttons">
+        <!-- ✅ NUEVO: Input para cargar logo -->
+        <label class="btn btn-logo" for="logoCompaniaInput" title="Cargar logo de la compañía">
+            🖼️ Logo Compañía
+            <input type="file" 
+                   id="logoCompaniaInput" 
+                   accept="image/*" 
+                   style="display: none;"
+                   onchange="sistemaBomberos.cargarLogoCompania(this)">
+        </label>
+        
+        <button type="button" class="btn btn-info" onclick="sistemaBomberos.toggleInfoCategorias()">
+            ℹ️ Info Categorías
+        </button>
+        <button type="button" class="btn btn-excel" onclick="sistemaBomberos.exportarExcel()">
+            📊 Exportar Excel
+        </button>
+        <button type="button" class="btn btn-pdf" onclick="sistemaBomberos.generarPDFConsultaVoluntarios()">
+            📄 Consulta PDF
+        </button>
+    </div>
+</div>
+
+                    <div class="buscador-container">
+                        <input type="text" id="buscadorBomberos" 
+                               placeholder="🔍 Buscar por nombre, clave, RUT, compañía...">
+                    </div>
+
+                    <div id="infoCategorias" class="info-categorias" style="display: none;">
+                        <h4>📋 Sistema de Categorías por Antigüedad</h4>
+                        <div class="categoria-explicacion">
+                            <div style="border-left-color: #1976d2;">
+                                <strong style="color: #1976d2;">🔰 Voluntario</strong><br>
+                                <small>Menos de 20 años de servicio</small>
+                            </div>
+                            <div style="border-left-color: #388e3c;">
+                                <strong style="color: #388e3c;">🏅 Voluntario Honorario de Compañía</strong><br>
+                                <small>Entre 20 y 24 años de servicio</small>
+                            </div>
+                            <div style="border-left-color: #f57c00;">
+                                <strong style="color: #f57c00;">🎖️ Voluntario Honorario del Cuerpo</strong><br>
+                                <small>Entre 25 y 49 años de servicio</small>
+                            </div>
+                            <div style="border-left-color: #d32f2f;">
+                                <strong style="color: #d32f2f;">🏆 Voluntario Insigne de Chile</strong><br>
+                                <small>50 años o más de servicio</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="contador">
+                        Total de bomberos registrados: <strong id="totalBomberos">0</strong>
+                    </div>
+                    <div id="listaBomberos"></div>
+                    <div id="paginationControlsBomberos"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/pagination.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/storage.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/sistema.js"></script>
+    <script src="js/informes.js"></script>
+</body>
+</html>
