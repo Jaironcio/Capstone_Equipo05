@@ -1,7 +1,36 @@
 ...existing code...
-{
-  "files.exclude": {
-    "**/fase 1": true,
-    "**/fase 2": true
-  }
-}
+# Sistema operativo
+Thumbs.db
+.DS_Store
+
+# Editores/IDE
+.vscode/
+.idea/
+
+# Node
+node_modules/
+npm-debug.log
+yarn-error.log
+dist/
+build/
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+env/
+venv/
+.env
+
+# Logs
+*.log
+
+# Ignorar carpetas de fases (con espacio)
+"/fase 1/"
+"/fase 2/"
+
+# Otros artefactos comunes
+coverage/
+*.exe
+*.dll
+*.so
