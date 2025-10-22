@@ -1,0 +1,7 @@
+...existing code...
+{
+  "files.exclude": {
+    "**/fase 1": true,
+    "**/fase 2": true
+  }
+}
