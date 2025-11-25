@@ -1,0 +1,21 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python manage.py runserver:*)",
+      "Bash(curl:*)",
+      "Bash(python manage.py shell:*)",
+      "Bash(MOVER_ARCHIVOS_OBSOLETOS.bat)",
+      "Bash(cmd.exe /c \"echo y | MOVER_ARCHIVOS_OBSOLETOS.bat\")",
+      "Bash(if [ -f \"static/css/sistema-compacto.css\" ])",
+      "Bash(then mv static/css/sistema-compacto.css archivos_obsoletos_2025_11_25/css_antiguo/)",
+      "Bash(fi)",
+      "Bash(if [ -f \"static/css/sistema-final-compacto.css\" ])",
+      "Bash(then mv static/css/sistema-final-compacto.css archivos_obsoletos_2025_11_25/css_antiguo/)",
+      "Bash(if [ -f \"static/css/sistema-separado.css\" ])",
+      "Bash(then mv static/css/sistema-separado.css archivos_obsoletos_2025_11_25/css_antiguo/)",
+      "Bash(find:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
