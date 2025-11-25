@@ -1,0 +1,363 @@
+/* ==================== AJUSTES COMPACTOS - UI/UX MEJORADO ==================== */
+
+/* ==================== BÚSCADOR COMPACTO ==================== */
+#buscadorBomberos {
+    padding: 8px 16px;
+    font-size: 0.9rem;
+    border-radius: 20px;
+}
+
+/* ==================== BOTONES FILTRO COMPACTOS ==================== */
+.btn-filtro-estado {
+    padding: 6px 14px !important;
+    font-size: 0.8rem !important;
+    border-radius: 18px !important;
+    margin: 3px !important;
+}
+
+/* ==================== TARJETAS DE VOLUNTARIOS COMPACTAS ==================== */
+.registro-card {
+    padding: 14px !important;
+    margin: 10px 0 !important;
+    border-radius: 8px !important;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1) !important;
+}
+
+.registro-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* ==================== FOTO/AVATAR COMPACTO ==================== */
+.registro-foto img,
+.sin-foto {
+    width: 60px !important;
+    height: 60px !important;
+    border-radius: 8px !important;
+    border: 2px solid #e0e0e0 !important;
+    object-fit: cover;
+}
+
+.sin-foto {
+    background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
+    font-size: 0.7rem !important;
+    color: #999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+/* ==================== CONTENIDO DE LA TARJETA ==================== */
+.registro-header {
+    margin-bottom: 10px !important;
+}
+
+.registro-nombre {
+    font-size: 1rem !important;
+    font-weight: 700;
+    color: #212121;
+    margin-bottom: 3px;
+}
+
+.registro-run {
+    font-size: 0.8rem !important;
+    color: #666;
+}
+
+/* ==================== BADGES COMPACTOS ==================== */
+.badge,
+.badge-activo,
+.badge-inactivo,
+.badge-renunciado,
+.badge-separado,
+.badge-expulsado,
+.badge-martir,
+.badge-fallecido {
+    padding: 3px 10px !important;
+    font-size: 0.7rem !important;
+    border-radius: 12px !important;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+}
+
+/* ==================== INFO DE LA TARJETA COMPACTA ==================== */
+.registro-info {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 8px !important;
+    font-size: 0.8rem !important;
+    margin-top: 10px;
+}
+
+.registro-info span {
+    color: #666;
+    line-height: 1.4;
+}
+
+.registro-info strong {
+    color: #333;
+    font-weight: 600;
+}
+
+/* ==================== CATEGORÍA BADGE ==================== */
+.categoria-badge {
+    display: inline-block;
+    padding: 4px 10px !important;
+    border-radius: 10px !important;
+    font-size: 0.7rem !important;
+    font-weight: 600;
+    margin-top: 6px;
+}
+
+/* ==================== BOTONES COMPACTOS ==================== */
+.btn-edit, 
+.btn-cargos, 
+.btn-sanciones, 
+.btn-delete,
+.btn-felicitaciones,
+.btn-uniformes,
+.btn-tabla-uniformes,
+.btn-pdf-ficha,
+.btn-cuotas,
+.btn-beneficios,
+.btn-pdf,
+.btn-deudas {
+    padding: 6px 12px !important;
+    font-size: 0.75rem !important;
+    border-radius: 6px !important;
+    margin-right: 6px !important;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+}
+
+/* ==================== ESPACIADO DE BOTONES ==================== */
+.card-actions,
+.registro-header {
+    display: flex;
+    gap: 8px !important;
+    flex-wrap: wrap;
+}
+
+/* ==================== CONTADOR COMPACTO ==================== */
+.contador {
+    font-size: 0.95rem !important;
+    margin-bottom: 15px !important;
+    padding: 8px;
+    background: #f8f9fa;
+    border-radius: 8px;
+}
+
+/* ==================== CONTENEDOR DE REGISTROS ==================== */
+.registros {
+    padding: 16px !important;
+    margin-top: 20px !important;
+    border-radius: 12px !important;
+}
+
+.registros-header {
+    margin-bottom: 16px !important;
+    gap: 12px !important;
+}
+
+/* ==================== LISTA DE REGISTROS ==================== */
+#listaBomberos {
+    max-height: 70vh !important;
+    padding-right: 8px !important;
+}
+
+/* ==================== BOTONES HEADER COMPACTOS ==================== */
+.header-btn {
+    padding: 7px 14px !important;
+    font-size: 0.8rem !important;
+    border-radius: 6px !important;
+    gap: 6px !important;
+}
+
+.header-btn .btn-icon {
+    font-size: 1rem !important;
+}
+
+/* ==================== WIDGET SALDO COMPACTO ==================== */
+.widget-saldo {
+    padding: 8px 16px !important;
+    min-width: 140px !important;
+    border-radius: 8px !important;
+}
+
+.widget-label {
+    font-size: 0.65rem !important;
+    margin-bottom: 2px !important;
+}
+
+.widget-value {
+    font-size: 1.1rem !important;
+}
+
+/* ==================== USER AVATAR COMPACTO ==================== */
+.user-avatar {
+    width: 36px !important;
+    height: 36px !important;
+    font-size: 0.95rem !important;
+}
+
+.user-role {
+    font-size: 0.8rem !important;
+}
+
+.btn-logout-compact {
+    padding: 3px 10px !important;
+    font-size: 0.7rem !important;
+}
+
+/* ==================== BRAND COMPACTO ==================== */
+.brand-logo {
+    font-size: 2rem !important;
+    width: 48px !important;
+    height: 48px !important;
+}
+
+.brand-text h1 {
+    font-size: 1.3rem !important;
+}
+
+.brand-text p {
+    font-size: 0.75rem !important;
+}
+
+/* ==================== HEADER CONTAINER ==================== */
+.header-container {
+    padding: 14px 30px !important;
+}
+
+/* ==================== REGISTROS HEADER ==================== */
+.registros h2 {
+    font-size: 1.1rem !important;
+    margin-bottom: 12px;
+}
+
+/* ==================== NÚMERO CIRCULAR (CLAVE) ==================== */
+.numero-circular {
+    width: 50px !important;
+    height: 50px !important;
+    font-size: 1.1rem !important;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #1976d2 0%, #0d47a1 100%);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    box-shadow: 0 2px 8px rgba(25, 118, 210, 0.3);
+    margin-right: 14px;
+    flex-shrink: 0;
+}
+
+/* ==================== LAYOUT DE TARJETA ==================== */
+.registro-card {
+    display: flex;
+    gap: 14px !important;
+}
+
+.registro-contenido {
+    flex: 1;
+    min-width: 0;
+}
+
+/* ==================== RESPONSIVE MEJORADO ==================== */
+@media (max-width: 768px) {
+    .registro-foto img,
+    .sin-foto {
+        width: 50px !important;
+        height: 50px !important;
+    }
+    
+    .numero-circular {
+        width: 42px !important;
+        height: 42px !important;
+        font-size: 0.95rem !important;
+    }
+    
+    .registro-nombre {
+        font-size: 0.95rem !important;
+    }
+    
+    .registro-info {
+        grid-template-columns: 1fr;
+        font-size: 0.75rem !important;
+    }
+    
+    .btn-edit, 
+    .btn-cargos, 
+    .btn-sanciones,
+    .btn-cuotas,
+    .btn-beneficios {
+        padding: 5px 10px !important;
+        font-size: 0.7rem !important;
+    }
+}
+
+/* ==================== MEJORAS VISUALES ==================== */
+.registro-card {
+    border-left: 3px solid #1976d2;
+    position: relative;
+    overflow: hidden;
+}
+
+.registro-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 3px;
+    height: 100%;
+    background: linear-gradient(180deg, #1976d2 0%, #0d47a1 100%);
+}
+
+/* ==================== HOVER EFFECTS ==================== */
+.btn-edit:hover,
+.btn-cargos:hover,
+.btn-sanciones:hover,
+.btn-felicitaciones:hover,
+.btn-uniformes:hover,
+.btn-cuotas:hover,
+.btn-beneficios:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* ==================== SCROLLBAR PERSONALIZADO ==================== */
+#listaBomberos::-webkit-scrollbar {
+    width: 6px;
+}
+
+#listaBomberos::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.05);
+    border-radius: 10px;
+}
+
+#listaBomberos::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #1976d2 0%, #0d47a1 100%);
+    border-radius: 10px;
+}
+
+#listaBomberos::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, #2196f3 0%, #1565c0 100%);
+}
+
+/* ==================== ESTADO ACTIVO ==================== */
+.badge-activo {
+    background: linear-gradient(135deg, #4caf50 0%, #2e7d32 100%) !important;
+    box-shadow: 0 2px 4px rgba(76, 175, 80, 0.3);
+}
+
+/* ==================== TRANSICIONES SUAVES ==================== */
+.registro-card,
+.btn-edit,
+.btn-cargos,
+.btn-sanciones,
+.btn-cuotas,
+.btn-beneficios,
+.badge {
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
