@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Bombero - Proyecto SEIS</title>
+    <link rel="stylesheet" href="css/login.css">
+    <link rel="stylesheet" href="css/sistema.css">
+</head>
+<body>
+    <div class="main-system">
+        <div class="container">
+            <header class="main-header">
+                <div class="header-container">
+                    <div class="header-brand">
+                        <div class="brand-logo">🚒</div>
+                        <div class="brand-text">
+                            <h1>Editar Voluntario</h1>
+                            <p>Actualizar información del registro</p>
+                        </div>
+                    </div>
+                    <div class="header-user">
+                        <div class="user-avatar">
+                            <span id="userInitials">U</span>
+                        </div>
+                        <div class="user-details">
+                            <div class="user-role" id="userRoleInfo">Usuario</div>
+                            <button class="btn-logout-compact" id="logoutBtn">Cerrar Sesión</button>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <div class="form-container">
+                <!-- Información Actual del Bombero -->
+                <div class="info-bombero-actual">
+                    <h3 style="color: #1976d2; margin-bottom: 15px;">
+                        ℹ️ Información Actual del Bombero
+                    </h3>
+                    <div id="infoBomberoActual" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 10px; padding: 15px; background: #f5f5f5; border-radius: 8px; margin-bottom: 20px;">
+                        <div>Cargando...</div>
+                    </div>
+                    <div id="fotoActualPreview" style="text-align: center; margin-bottom: 20px;"></div>
+                </div>
+
+                <div id="mensaje" class="success" style="display: none;"></div>
+
+                <form id="formEditarBombero" class="form-bombero">
+                    <input type="hidden" id="idBombero" name="idBombero">
+
+                    <h2>📝 Editar Datos del Voluntario</h2>
+
+                    <!-- Clave del Bombero -->
+                    <div class="form-group">
+                        <label for="claveBombero">Clave del Bombero *</label>
+                        <input type="text" 
+                               id="claveBombero" 
+                               name="claveBombero" 
+                               placeholder="Ej: 693" 
+                               required>
+                    </div>
+
+                    <!-- ========== NOMBRES ========== -->
+                    <div class="form-group">
+                        <label for="primerNombre">Primer Nombre *</label>
+                        <input type="text" 
+                               id="primerNombre" 
+                               name="primerNombre" 
+                               placeholder="Ej: Cristian" 
+                               required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="segundoNombre">Segundo Nombre</label>
+                        <input type="text" 
+                               id="segundoNombre" 
+                               name="segundoNombre" 
+                               placeholder="Ej: Alejandro (opcional)">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="tercerNombre">Tercer Nombre</label>
+                        <input type="text" 
+                               id="tercerNombre" 
+                               name="tercerNombre" 
+                               placeholder="Ej: José (opcional)">
+                    </div>
+
+                    <!-- ========== APELLIDOS ========== -->
+                    <div class="form-group">
+                        <label for="primerApellido">Primer Apellido *</label>
+                        <input type="text" 
+                               id="primerApellido" 
+                               name="primerApellido" 
+                               placeholder="Ej: Vera" 
+                               required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="segundoApellido">Segundo Apellido *</label>
+                        <input type="text" 
+                               id="segundoApellido" 
+                               name="segundoApellido" 
+                               placeholder="Ej: Arriagada" 
+                               required>
+                    </div>
+
+                    <!-- ========== PADRINOS ========== -->
+                    <h3 style="margin-top: 30px; margin-bottom: 20px; color: #1976d2; border-bottom: 2px solid #1976d2; padding-bottom: 10px;">
+                        👥 Información de Padrinos
+                    </h3>
+
+                    <div class="form-group">
+                        <label for="nombrePrimerPadrino">Nombre Primer Padrino *</label>
+                        <input type="text" 
+                               id="nombrePrimerPadrino" 
+                               name="nombrePrimerPadrino" 
+                               placeholder="Ej: Juan Pérez González" 
+                               required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="nombreSegundoPadrino">Nombre Segundo Padrino *</label>
+                        <input type="text" 
+                               id="nombreSegundoPadrino" 
+                               name="nombreSegundoPadrino" 
+                               placeholder="Ej: María López Silva" 
+                               required>
+                    </div>
+
+                    <!-- ========== DATOS PERSONALES ========== -->
+                    <h3 style="margin-top: 30px; margin-bottom: 20px; color: #1976d2; border-bottom: 2px solid #1976d2; padding-bottom: 10px;">
+                        📋 Datos Personales
+                    </h3>
+
+                    <div class="form-group">
+                        <label for="fechaNacimiento">Fecha de Nacimiento *</label>
+                        <input type="date" 
+                               id="fechaNacimiento" 
+                               name="fechaNacimiento" 
+                               required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="rut">RUT *</label>
+                        <input type="text" 
+                               id="rut" 
+                               name="rut" 
+                               placeholder="12.345.678-9" 
+                               required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="profesion">Profesión u Oficio *</label>
+                        <input type="text" 
+                               id="profesion" 
+                               name="profesion" 
+                               placeholder="Ingrese profesión u oficio" 
+                               required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="domicilio">Domicilio *</label>
+                        <input type="text" 
+                               id="domicilio" 
+                               name="domicilio" 
+                               placeholder="Dirección completa" 
+                               required>
+                    </div>
+
+                    <!-- ========== DATOS BOMBERILES ========== -->
+                    <h3 style="margin-top: 30px; margin-bottom: 20px; color: #1976d2; border-bottom: 2px solid #1976d2; padding-bottom: 10px;">
+                        🚒 Datos Bomberiles
+                    </h3>
+
+                    <div class="form-group">
+                        <label for="nroRegistro">Número de Registro Nacional *</label>
+                        <input type="text" 
+                               id="nroRegistro" 
+                               name="nroRegistro" 
+                               placeholder="Número de registro" 
+                               required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="fechaIngreso">Fecha de Ingreso *</label>
+                        <input type="date" 
+                               id="fechaIngreso" 
+                               name="fechaIngreso" 
+                               required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="compania">Compañía *</label>
+                        <input type="text" 
+                               id="compania" 
+                               name="compania" 
+                               placeholder="Compañía de bomberos" 
+                               required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="grupoSanguineo">Grupo Sanguíneo *</label>
+                        <select id="grupoSanguineo" name="grupoSanguineo" required>
+                            <option value="">Seleccione grupo sanguíneo</option>
+                            <option value="A+">A+</option>
+                            <option value="A-">A-</option>
+                            <option value="B+">B+</option>
+                            <option value="B-">B-</option>
+                            <option value="AB+">AB+</option>
+                            <option value="AB-">AB-</option>
+                            <option value="O+">O+</option>
+                            <option value="O-">O-</option>
+                        </select>
+                    </div>
+
+                    <!-- ========== CONTACTO ========== -->
+                    <h3 style="margin-top: 30px; margin-bottom: 20px; color: #1976d2; border-bottom: 2px solid #1976d2; padding-bottom: 10px;">
+                        📞 Información de Contacto
+                    </h3>
+
+                    <div class="form-group">
+                        <label for="telefono">Número de Teléfono *</label>
+                        <input type="tel" 
+                               id="telefono" 
+                               name="telefono" 
+                               placeholder="+56 9 1234 5678" 
+                               required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Correo Electrónico (opcional)</label>
+                        <input type="email" 
+                               id="email" 
+                               name="email" 
+                               placeholder="ejemplo@correo.com">
+                    </div>
+
+                    <!-- ========== FOTOGRAFÍA ========== -->
+                    <h3 style="margin-top: 30px; margin-bottom: 20px; color: #ff9800; border-bottom: 2px solid #ff9800; padding-bottom: 10px;">
+                        📸 Cambiar Fotografía (Opcional)
+                    </h3>
+
+                    <div class="form-group">
+                        <label for="fotoBombero">Nueva Fotografía</label>
+                        <input type="file" 
+                               id="fotoBombero" 
+                               name="fotoBombero" 
+                               accept="image/*"
+                               onchange="editarBomberoSistema.previsualizarFoto(this)">
+                        <small>Si no selecciona una nueva foto, se mantendrá la actual</small>
+                    </div>
+
+                    <div id="previewFotoNueva"></div>
+
+                    <!-- ========== INFORMACIÓN ADICIONAL (OPCIONAL) ========== -->
+                    <h3 style="margin-top: 30px; margin-bottom: 20px; color: #388e3c; border-bottom: 2px solid #388e3c; padding-bottom: 10px;">
+                        📄 Información Adicional (Opcional)
+                    </h3>
+
+                    <div class="form-group">
+                        <label for="otrosCuerpos">Otros Cuerpos de Bomberos donde ha servido</label>
+                        <input type="text" 
+                               id="otrosCuerpos" 
+                               name="otrosCuerpos" 
+                               placeholder="Otros cuerpos donde ha servido">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="companiaOpcional">Compañía Adicional</label>
+                        <input type="text" 
+                               id="companiaOpcional" 
+                               name="companiaOpcional" 
+                               placeholder="Compañía adicional">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="desde">Desde</label>
+                        <input type="date" 
+                               id="desde" 
+                               name="desde">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="hasta">Hasta</label>
+                        <input type="date" 
+                               id="hasta" 
+                               name="hasta">
+                    </div>
+
+                    <!-- ========== BOTONES ========== -->
+                    <div class="form-buttons">
+                        <button type="submit" class="btn btn-primary">
+                            💾 Guardar Cambios
+                        </button>
+                        <button type="button" class="btn btn-secondary" onclick="editarBomberoSistema.volver()">
+                            ❌ Cancelar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/auth.js"></script>
+    <script src="js/storage.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/editar-bombero.js"></script>
+</body>
+</html>

@@ -34,3 +34,6 @@ coverage/
 *.exe
 *.dll
 *.so
+
+# Archivo problemático (nombre reservado Windows)
+**/templates/nul

@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(for dir in cargos sanciones finanzas cuotas beneficios uniformes asistencias)",
+      "Bash(do echo \"=== $dir/serializers.py ===\")",
+      "Bash(python -c:*)",
+      "Bash(done)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

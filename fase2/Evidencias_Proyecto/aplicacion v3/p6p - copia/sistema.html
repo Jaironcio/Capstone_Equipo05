@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proyecto SEIS - Sistema Principal</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+    <link rel="stylesheet" href="css/login.css">
+    <link rel="stylesheet" href="css/sistema.css">
+</head>
+<body>
+    <div class="main-system" id="mainSystem">
+        <div id="containerPrincipal" class="container">
+            <header class="main-header">
+                <div class="header-container">
+                    <div class="header-brand">
+                        <div class="brand-logo">🚒</div>
+                        <div class="brand-text">
+                            <h1>Proyecto SEIS</h1>
+                            <p>Sistema de Registro de Bomberos</p>
+                        </div>
+                    </div>
+
+                    <div class="header-panel">
+                        <div id="saldoCompaniaHeader" class="widget-saldo" style="display: none;">
+                            <span class="widget-label">Saldo Compañía</span>
+                            <span class="widget-value" id="saldoMontoHeader">$0</span>
+                        </div>
+
+                        <div class="header-buttons">
+                            <button class="header-btn btn-alert" id="btnDeudores" style="display: none;">
+                                <span class="btn-badge" id="cantidadDeudores">0</span>
+                                <span class="btn-label">Deudores</span>
+                            </button>
+
+                            <button class="header-btn btn-primary" id="btnBeneficios" style="display: none;">
+                                <span class="btn-icon">🎪</span>
+                                <span class="btn-label">Beneficios</span>
+                            </button>
+
+                            <button class="header-btn btn-success" id="btnFinanzas" style="display: none;">
+                                <span class="btn-icon">💰</span>
+                                <span class="btn-label">Finanzas</span>
+                            </button>
+                            
+                            <button class="header-btn btn-danger" id="btnRegistroAsistencia" style="display: none;">
+                                <span class="btn-icon">📋</span>
+                                <span class="btn-label">Asistencia</span>
+                            </button>
+                            
+                            <button class="header-btn btn-info" id="btnHistorialAsistencias" style="display: none;">
+                                <span class="btn-icon">📊</span>
+                                <span class="btn-label">Historial</span>
+                            </button>
+                        </div>
+
+                        <div class="header-user">
+                            <div class="user-avatar">
+                                <span id="userInitials">T</span>
+                            </div>
+                            <div class="user-details">
+                                <div class="user-role" id="userRoleInfo">Tesorero</div>
+                                <button class="btn-logout-compact" id="logoutBtn">Cerrar Sesión</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <div class="form-container">
+                <div id="mensaje" class="success" style="display: none;"></div>
+                
+                <!-- Botón para crear nuevo voluntario -->
+                <div style="text-align: center; margin: 30px 0; padding: 20px; background: linear-gradient(135deg, rgba(76, 175, 80, 0.05) 0%, rgba(46, 125, 50, 0.1) 100%); border-radius: 15px; border: 2px dashed rgba(76, 175, 80, 0.3);">
+                    <button type="button" 
+                            onclick="sistemaBomberos.irACrear()"
+                            style="background: linear-gradient(135deg, #4caf50 0%, #2e7d32 100%); color: white; border: none; padding: 18px 50px; font-size: 1.3rem; font-weight: 600; border-radius: 50px; cursor: pointer; box-shadow: 0 6px 20px rgba(76, 175, 80, 0.3); transition: all 0.3s;">
+                        ➕ Crear Nuevo Voluntario
+                    </button>
+                </div>
+
+                <div class="registros">
+                    <div class="registros-header">
+                        <h3>Bomberos Registrados</h3>
+                        <div class="registros-buttons">
+                            <label class="btn btn-logo" for="logoCompaniaInput" title="Cargar logo de la compañía">
+                                🖼️ Logo Compañía
+                                <input type="file" 
+                                       id="logoCompaniaInput" 
+                                       accept="image/*" 
+                                       style="display: none;"
+                                       onchange="sistemaBomberos.cargarLogoCompania(this)">
+                            </label>
+                            
+                            <button type="button" class="btn btn-info" onclick="sistemaBomberos.toggleInfoCategorias()">
+                                ℹ️ Info Categorías
+                            </button>
+                            <button type="button" class="btn btn-excel" onclick="sistemaBomberos.exportarExcel()">
+                                📊 Exportar Excel
+                            </button>
+                            <button type="button" class="btn btn-pdf" onclick="sistemaBomberos.generarPDFConsultaVoluntarios()">
+                                📄 Consulta PDF
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="buscador-container">
+                        <input type="text" id="buscadorBomberos" 
+                               placeholder="🔍 Buscar por nombre, clave, RUT, compañía...">
+                    </div>
+
+                    <div id="infoCategorias" class="info-categorias" style="display: none;">
+                        <h4>📋 Sistema de Categorías por Antigüedad</h4>
+                        <div class="categoria-explicacion">
+                            <div style="border-left-color: #1976d2;">
+                                <strong style="color: #1976d2;">🔰 Voluntario</strong><br>
+                                <small>Menos de 20 años de servicio</small>
+                            </div>
+                            <div style="border-left-color: #388e3c;">
+                                <strong style="color: #388e3c;">🏅 Voluntario Honorario de Compañía</strong><br>
+                                <small>Entre 20 y 24 años de servicio</small>
+                            </div>
+                            <div style="border-left-color: #f57c00;">
+                                <strong style="color: #f57c00;">🎖️ Voluntario Honorario del Cuerpo</strong><br>
+                                <small>Entre 25 y 49 años de servicio</small>
+                            </div>
+                            <div style="border-left-color: #d32f2f;">
+                                <strong style="color: #d32f2f;">🏆 Voluntario Insigne de Chile</strong><br>
+                                <small>50 años o más de servicio</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="contador">
+                        Total de bomberos registrados: <strong id="totalBomberos">0</strong>
+                    </div>
+                    <div id="listaBomberos"></div>
+                    <div id="paginationControlsBomberos"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/pagination.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/storage.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/sistema.js"></script>
+    <script src="js/informes.js"></script>
+</body>
+</html>

@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tabla de Uniformes - Proyecto SEIS</title>
+    <link rel="stylesheet" href="css/global-profesional.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            padding: 30px;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 28px;
+        }
+
+        .info-voluntario {
+            background: #f5f5f5;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+
+        .info-voluntario p {
+            margin: 8px 0;
+            font-size: 16px;
+        }
+
+        .tabla-uniforme-tipo {
+            margin-bottom: 30px;
+            page-break-inside: avoid;
+        }
+
+        .tabla-uniforme-tipo h3 {
+            margin: 0;
+            padding: 10px 15px;
+            border-radius: 8px 8px 0 0;
+            color: white;
+        }
+
+        .tabla-uniformes-detalle {
+            width: 100%;
+            border-collapse: collapse;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .tabla-uniformes-detalle th {
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        .tabla-uniformes-detalle td {
+            padding: 10px;
+            border-bottom: 1px solid #e0e0e0;
+            font-size: 13px;
+        }
+
+        .tabla-uniformes-detalle td:last-child {
+            max-width: 250px;
+            word-wrap: break-word;
+        }
+
+        .badge-condicion, .badge-estado {
+            padding: 5px 12px;
+            border-radius: 12px;
+            font-weight: bold;
+            font-size: 12px;
+            display: inline-block;
+        }
+
+        .condicion-nuevo { background-color: #4caf50; color: white; }
+        .condicion-semi-nuevo { background-color: #ff9800; color: white; }
+        .condicion-usado { background-color: #f44336; color: white; }
+        .estado-bueno { background-color: #8bc34a; color: white; }
+        .estado-regular { background-color: #ffc107; color: white; }
+        .estado-malo { background-color: #d32f2f; color: white; }
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-print {
+            background: linear-gradient(135deg, #4caf50 0%, #45a049 100%);
+            color: white;
+        }
+
+        .btn-print:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+        }
+
+        .btn-back {
+            background: linear-gradient(135deg, #607d8b 0%, #546e7a 100%);
+            color: white;
+        }
+
+        .btn-back:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(96, 125, 139, 0.3);
+        }
+
+        .no-uniformes {
+            text-align: center;
+            padding: 60px 20px;
+            background: #f5f5f5;
+            border-radius: 8px;
+        }
+
+        .tipos-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .tipo-card {
+            padding: 15px;
+            border-radius: 4px;
+            border-left: 4px solid;
+        }
+
+        /* Estilos para impresión */
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+
+            .container {
+                box-shadow: none;
+                padding: 10px;
+            }
+
+            .action-buttons {
+                display: none;
+            }
+
+            .header {
+                background: #ff9800 !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+                padding: 15px !important;
+            }
+
+            .header h1 {
+                font-size: 22px !important;
+            }
+
+            .info-voluntario {
+                padding: 10px !important;
+                margin-bottom: 15px !important;
+            }
+
+            .badge-condicion, .badge-estado {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+                padding: 3px 8px !important;
+                font-size: 10px !important;
+            }
+
+            .tabla-uniforme-tipo {
+                page-break-inside: avoid;
+                margin-bottom: 20px !important;
+            }
+
+            .tabla-uniforme-tipo h3 {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+                font-size: 16px !important;
+                padding: 8px 12px !important;
+            }
+
+            .tabla-uniformes-detalle th {
+                font-size: 11px !important;
+                padding: 8px !important;
+                background-color: #f0f0f0 !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            .tabla-uniformes-detalle td {
+                font-size: 10px !important;
+                padding: 6px !important;
+            }
+
+            .tabla-uniformes-detalle td:last-child {
+                max-width: 180px;
+                font-size: 9px !important;
+                word-wrap: break-word;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="action-buttons">
+            <button class="btn btn-print" onclick="window.print()">🖨️ Imprimir Tabla</button>
+            <a href="sistema.html" class="btn btn-back">← Volver al Sistema</a>
+        </div>
+
+        <div id="contenidoTabla">
+            <!-- El contenido se cargará aquí dinámicamente -->
+        </div>
+    </div>
+
+    <script src="js/auth.js"></script>
+    <script src="js/storage.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/uniformes-voluntario.js"></script>
+    <script>
+        // Verificar autenticación
+        if (!checkAuth()) {
+            window.location.href = 'index.html';
+        }
+
+        // Obtener ID del bombero desde la URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const bomberoId = urlParams.get('id');
+
+        if (!bomberoId) {
+            document.getElementById('contenidoTabla').innerHTML = `
+                <div class="no-uniformes">
+                    <h2>❌ Error</h2>
+                    <p>No se especificó un ID de voluntario válido.</p>
+                    <a href="sistema.html" class="btn btn-back" style="margin-top: 20px;">Volver al Sistema</a>
+                </div>
+            `;
+        } else {
+            // Cargar y mostrar la tabla
+            cargarTablaUniformes(bomberoId);
+        }
+
+        async function cargarTablaUniformes(bomberoId) {
+            try {
+                const tabla = new TablaUniformesVoluntario(bomberoId);
+                const exito = await tabla.cargarDatos();
+                
+                if (exito) {
+                    // Generar HTML pero sin el modal overlay
+                    const htmlCompleto = tabla.generarTablaHTML();
+                    
+                    // Extraer solo el contenido del modal-body
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(htmlCompleto, 'text/html');
+                    const modalHeader = doc.querySelector('.modal-header h2');
+                    const modalBody = doc.querySelector('.modal-body');
+                    
+                    if (modalHeader && modalBody) {
+                        const nombreCompleto = modalHeader.textContent.replace('👔 Uniformes de ', '');
+                        
+                        document.getElementById('contenidoTabla').innerHTML = `
+                            <div class="header">
+                                <h1>👔 Uniformes de ${nombreCompleto}</h1>
+                            </div>
+                            ${modalBody.innerHTML}
+                        `;
+                    } else {
+                        throw new Error('No se pudo generar el contenido');
+                    }
+                } else {
+                    document.getElementById('contenidoTabla').innerHTML = `
+                        <div class="no-uniformes">
+                            <h2>❌ Voluntario no encontrado</h2>
+                            <p>No se pudo cargar la información del voluntario.</p>
+                            <a href="sistema.html" class="btn btn-back" style="margin-top: 20px;">Volver al Sistema</a>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                console.error('Error al cargar tabla:', error);
+                document.getElementById('contenidoTabla').innerHTML = `
+                    <div class="no-uniformes">
+                        <h2>❌ Error al cargar</h2>
+                        <p>Ocurrió un error al cargar la tabla de uniformes.</p>
+                        <p style="color: #999; font-size: 14px;">${error.message}</p>
+                        <a href="sistema.html" class="btn btn-back" style="margin-top: 20px;">Volver al Sistema</a>
+                    </div>
+                `;
+            }
+        }
+
+        // Escuchar cambios en localStorage para actualizar la tabla en tiempo real
+        window.addEventListener('storage', function(e) {
+            // Si cambia algún tipo de uniforme, recargar la tabla
+            if (e.key && (
+                e.key.includes('uniformes') || 
+                e.key === 'uniformesEstructural' || 
+                e.key === 'uniformesForestal' || 
+                e.key === 'uniformesRescate' ||
+                e.key === 'uniformesHazmat' ||
+                e.key === 'uniformesTenidaCuartel' ||
+                e.key === 'uniformesAccesorios' ||
+                e.key === 'uniformesParada' ||
+                e.key === 'uniformesUsar' ||
+                e.key === 'uniformesAgreste' ||
+                e.key === 'uniformesUm6' ||
+                e.key === 'uniformesGersa'
+            )) {
+                console.log('🔄 Detectado cambio en uniformes, recargando tabla...');
+                if (bomberoId) {
+                    cargarTablaUniformes(bomberoId);
+                }
+            }
+        });
+
+        // También escuchar eventos personalizados desde la misma página
+        window.addEventListener('uniformesActualizados', function() {
+            console.log('🔄 Evento uniformesActualizados recibido, recargando tabla...');
+            if (bomberoId) {
+                cargarTablaUniformes(bomberoId);
+            }
+        });
+
+        // Recargar cada 5 segundos si la página está visible (opcional pero útil)
+        let intervalRecarga;
+        document.addEventListener('visibilitychange', function() {
+            if (document.hidden) {
+                // Detener el intervalo si la página no es visible
+                if (intervalRecarga) clearInterval(intervalRecarga);
+            } else {
+                // Recargar inmediatamente al volver a la página
+                if (bomberoId) cargarTablaUniformes(bomberoId);
+                
+                // Establecer intervalo de recarga automática cada 5 segundos
+                intervalRecarga = setInterval(() => {
+                    if (bomberoId) cargarTablaUniformes(bomberoId);
+                }, 5000);
+            }
+        });
+
+        // Iniciar el intervalo si la página está visible
+        if (!document.hidden && bomberoId) {
+            intervalRecarga = setInterval(() => {
+                if (bomberoId) cargarTablaUniformes(bomberoId);
+            }, 5000);
+        }
+    </script>
+</body>
+</html>

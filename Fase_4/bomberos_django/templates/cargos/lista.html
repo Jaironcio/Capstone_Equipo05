@@ -1,50 +1,178 @@
 {% load static %}
-{% extends 'base.html' %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proyecto SEIS - Sistema de Cargos</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <link rel="stylesheet" href="{% static 'css/global-profesional.css' %}">
+    <link rel="stylesheet" href="{% static 'css/cargos-sanciones.css' %}">
+    <link rel="stylesheet" href="{% static 'css/tema-bomberil.css' %}">
+    <link rel="stylesheet" href="{% static 'css/cargos-custom.css' %}">
+</head>
+<body>
+    <div class="page-container cargos-page">
+        <div class="container">
+            <div class="page-header cargos-header">
+                 <button type="button" class="btn btn-secondary" onclick="cargosSistema.volverAlSistema()">
+            ← Volver
+        </button>
+                <h2>👔 SISTEMA DE CARGOS Y AÑOS DE SERVICIO</h2>
+                <p>Registro y Control de Cargos Desempeñados por Bomberos</p>
+            </div>
 
-{% block title %}Lista de Cargos{% endblock %}
+            <div class="page-content">
+                <div id="mensajeCargos" class="mensaje-global" style="display: none;"></div>
 
-{% block content %}
-<div style="margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
-    <h2 style="color: #333;">⭐ Lista de Cargos</h2>
-    <a href="{% url 'crear_cargo' %}" class="btn btn-primary">➕ Nuevo Cargo</a>
+                <div class="bombero-info">
+                    <h3>👤 Información del Bombero</h3>
+                    <div class="bombero-datos" id="bomberoDatosCargos">
+                        <!-- Datos cargados por JavaScript -->
+                    </div>
+                </div>
+
+                <div class="form-container">
+                    <h3>📋 Registro de Nuevo Cargo</h3>
+                    
+                    <form id="formCargo">
+                        <input type="hidden" id="bomberoCargoId" name="bomberoCargoId">
+                        <input type="hidden" id="cargoIdEditando" name="cargoIdEditando">
+                        
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="añoCargo" class="opcional">Año</label>
+                                <input type="number" id="añoCargo" name="añoCargo" min="1950" max="2030"
+                                       placeholder="Ej: 2024">
+                                <div class="error" id="error-añoCargo"></div>
+                            </div>
+
+                            <div class="form-group full-width">
+    <label class="opcional">⭐ Cargos de Comandancia</label>
+    <select id="cargoComandancia" name="cargoComandancia" onchange="cargosSistema.seleccionarCargo('comandancia')">
+        <option value="">Seleccione cargo de comandancia</option>
+        <option value="Superintendente">Superintendente</option>
+        <option value="Comandante 1">1er Comandante</option>
+        <option value="Comandante 2">2do Comandante</option>
+        <option value="Comandante 3">3er Comandante</option>
+        <option value="Intendente General">Intendente General</option>
+        <option value="Tesorero General">Tesorero General</option>
+        <option value="Secretario General">Secretario General</option>
+        <option value="Ayudante General">Ayudante General</option>
+    </select>
 </div>
 
-<div style="background: white; padding: 20px; border-radius: 12px;">
-    <table style="width: 100%; border-collapse: collapse;">
-        <thead>
-            <tr style="background: #f8f9fa; border-bottom: 2px solid #e0e0e0;">
-                <th style="padding: 12px; text-align: left;">Voluntario</th>
-                <th style="padding: 12px; text-align: left;">Cargo</th>
-                <th style="padding: 12px; text-align: left;">Tipo</th>
-                <th style="padding: 12px; text-align: left;">Año</th>
-                <th style="padding: 12px; text-align: left;">Desde</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for cargo in cargos %}
-            <tr style="border-bottom: 1px solid #e0e0e0;">
-                <td style="padding: 12px;">{{ cargo.voluntario.nombre_completo }}</td>
-                <td style="padding: 12px; font-weight: 600;">{{ cargo.nombre_cargo }}</td>
-                <td style="padding: 12px;">
-                    <span style="padding: 4px 12px; border-radius: 12px; background: #dbeafe; color: #1e40af; font-size: 0.85rem;">
-                        {{ cargo.get_tipo_cargo_display }}
-                    </span>
-                </td>
-                <td style="padding: 12px;">{{ cargo.anio }}</td>
-                <td style="padding: 12px;">{{ cargo.fecha_inicio }}</td>
-            </tr>
-            {% empty %}
-            <tr>
-                <td colspan="5" style="padding: 40px; text-align: center; color: #999;">
-                    No hay cargos registrados
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+<div class="form-group full-width">
+    <label class="opcional">👔 Cargos de Compañía</label>
+    <select id="cargoCompania" name="cargoCompania" onchange="cargosSistema.seleccionarCargo('compania')">
+        <option value="">Seleccione cargo de compañía</option>
+        <option value="Capitán">Capitán</option>
+        <option value="Director">Director</option>
+        <option value="Secretario">Secretario</option>
+        <option value="Tesorero">Tesorero</option>
+        <option value="Capellán">Capellán</option>
+        <option value="Intendente">Intendente</option>
+        <option value="Teniente Primero">Teniente Primero</option>
+        <option value="Teniente Segundo">Teniente Segundo</option>
+        <option value="Teniente Tercero">Teniente Tercero</option>
+        <option value="Teniente Cuarto">Teniente Cuarto</option>
+    </select>
 </div>
 
-<div style="margin-top: 20px; text-align: center;">
-    <a href="{% url 'sistema' %}" class="btn btn-secondary">← Volver al Sistema</a>
+<div class="form-group full-width">
+    <label class="opcional">⚖️ Consejos de Compañía</label>
+    <select id="cargoConsejo" name="cargoConsejo" onchange="cargosSistema.seleccionarCargo('consejo')">
+        <option value="">Seleccione cargo de consejo</option>
+        <option value="Miembro Consejo de Disciplina de Cía">Miembro Consejo de Disciplina de Cía</option>
+        <option value="Miembro Junta Calificadora">Miembro Junta Calificadora</option>
+        <option value="Miembro Junta Revisora de Cuentas">Miembro Junta Revisora de Cuentas</option>
+    </select>
 </div>
-{% endblock %}
+
+<div class="form-group full-width">
+    <label class="opcional">🔧 Cargos de Confianza</label>
+    <select id="cargoTecnico" name="cargoTecnico" onchange="cargosSistema.seleccionarCargo('tecnico')">
+        <option value="">Seleccione cargo de confianza</option>
+        <option value="Jefe de Máquinas">Jefe de Máquinas</option>
+        <option value="Maquinista 1°">Maquinista 1°</option>
+        <option value="Maquinista 2°">Maquinista 2°</option>
+        <option value="Maquinista 3°">Maquinista 3°</option>
+        <option value="Ayudante">Ayudante</option>
+        <option value="Ayudante 1°">Ayudante 1°</option>
+        <option value="Ayudante 2°">Ayudante 2°</option>
+        <option value="Ayudante 3°">Ayudante 3°</option>
+    </select>
+</div>
+
+<input type="hidden" id="tipoCargo" name="tipoCargo">
+
+                            <div class="form-group">
+                                <label for="fechaInicioCargo" class="opcional">Desde</label>
+                                <input type="date" id="fechaInicioCargo" name="fechaInicioCargo">
+                                <div class="error" id="error-fechaInicioCargo"></div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="fechaFinCargo" class="opcional">Hasta</label>
+                                <input type="date" id="fechaFinCargo" name="fechaFinCargo">
+                                <div class="error" id="error-fechaFinCargo"></div>
+                            </div>
+
+                         
+
+                            <div class="form-group full-width">
+                                <label for="observacionesCargo" class="opcional">Observaciones / Otros Cargos Ocupados en el Mismo Año Calendario</label>
+                                <textarea id="observacionesCargo" name="observacionesCargo" rows="3" 
+                                          placeholder="Observaciones adicionales u otros cargos desempeñados en el mismo año"></textarea>
+                                <div class="error" id="error-observacionesCargo"></div>
+                            </div>
+
+                            <div class="info-nota">
+                                💡 <strong>Nota:</strong> Debe completar al menos uno de los siguientes campos: <strong>Año</strong>, <strong>Cargo</strong> o <strong>Desde</strong>
+                            </div>
+                        </div>
+
+                        <div class="buttons">
+                            <button type="submit" class="btn btn-cargo">Registrar Cargo</button>
+                            <button type="button" class="btn btn-secondary" onclick="cargosSistema.limpiarFormulario()">Limpiar Formulario</button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="section-header-cargos">
+                    <h2>📚 Historial de Cargos</h2>
+                    <div class="header-actions-cargos">
+                        <button type="button" class="btn-export-pdf" onclick="cargosSistema.exportarPDF()">
+                            📄 EXPORTAR PDF
+                        </button>
+                        <button type="button" class="btn-export-excel" onclick="cargosSistema.exportarExcel()">
+                            📊 DESCARGAR EXCEL
+                        </button>
+                    </div>
+                </div>
+
+                <div class="contador">
+                    Total de cargos registrados: <strong id="totalCargos">0</strong>
+                </div>
+                
+                <div id="listaCargos" class="lista-items"></div>
+
+                <div class="navigation-buttons">
+                    <button type="button" class="btn btn-volver" onclick="cargosSistema.volverAlSistema()">
+                        ← Regresar al Sistema Principal
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Librería jsPDF para generar PDFs -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+    <!-- Scripts -->
+    <script src="{% static 'js/auth_django.js' %}"></script>
+    <script src="{% static 'js/utils.js' %}"></script>
+    <script src="{% static 'js/cargos-django.js' %}?v=9.0"></script>
+    <script src="{% static 'js/cargar-logo-auto.js' %}?v=1.0"></script>
+</body>
+</html>

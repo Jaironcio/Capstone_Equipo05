@@ -1,56 +1,176 @@
 {% load static %}
-{% extends 'base.html' %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proyecto SEIS - Sistema de Sanciones</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+    <link rel="stylesheet" href="{% static 'css/global-profesional.css' %}">
+    <link rel="stylesheet" href="{% static 'css/cargos-sanciones.css' %}">
+    <link rel="stylesheet" href="{% static 'css/tema-bomberil.css' %}">
+</head>
+<body>
+    <div class="page-container sanciones-page">
+        <div class="container">
+            <div class="page-header sanciones-header">
+                <h2>⚖️ SISTEMA DE SANCIONES DISCIPLINARIAS</h2>
+                <p>Registro y Control de Medidas Disciplinarias Institucionales</p>
+            </div>
 
-{% block title %}Lista de Sanciones{% endblock %}
+            <div class="page-content">
+                <div id="mensajeSanciones" class="mensaje-global" style="display: none;"></div>
 
-{% block content %}
-<div style="margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
-    <h2 style="color: #333;">⚖️ Lista de Sanciones</h2>
-    <a href="{% url 'crear_sancion' %}" class="btn btn-primary">➕ Nueva Sanción</a>
-</div>
+                <div class="bombero-info">
+                    <h3>👤 Información del Bombero</h3>
+                    <div class="bombero-datos" id="bomberoDatosSanciones">
+                        <!-- Datos cargados por JavaScript -->
+                    </div>
+                </div>
 
-<div style="background: white; padding: 20px; border-radius: 12px;">
-    <table style="width: 100%; border-collapse: collapse;">
-        <thead>
-            <tr style="background: #f8f9fa; border-bottom: 2px solid #e0e0e0;">
-                <th style="padding: 12px; text-align: left;">Voluntario</th>
-                <th style="padding: 12px; text-align: left;">Tipo</th>
-                <th style="padding: 12px; text-align: left;">Fecha</th>
-                <th style="padding: 12px; text-align: left;">Días</th>
-                <th style="padding: 12px; text-align: left;">Oficio</th>
-                <th style="padding: 12px; text-align: left;">Autoridad</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for sancion in sanciones %}
-            <tr style="border-bottom: 1px solid #e0e0e0;">
-                <td style="padding: 12px;">{{ sancion.voluntario.nombre_completo }}</td>
-                <td style="padding: 12px;">
-                    <span style="padding: 4px 12px; border-radius: 12px; font-size: 0.85rem; font-weight: 600;
-                                 {% if sancion.tipo_sancion == 'suspension' %}background: #fef3c7; color: #92400e;
-                                 {% elif sancion.tipo_sancion == 'renuncia' %}background: #dbeafe; color: #1e40af;
-                                 {% elif sancion.tipo_sancion == 'separacion' %}background: #fee2e2; color: #991b1b;
-                                 {% else %}background: #fee2e2; color: #7f1d1d;{% endif %}">
-                        {{ sancion.get_tipo_sancion_display }}
-                    </span>
-                </td>
-                <td style="padding: 12px;">{{ sancion.fecha_desde }}</td>
-                <td style="padding: 12px;">{{ sancion.dias_sancion|default:"-" }}</td>
-                <td style="padding: 12px;">{{ sancion.oficio_numero }}</td>
-                <td style="padding: 12px;">{{ sancion.autoridad_sancionatoria|default:"-" }}</td>
-            </tr>
-            {% empty %}
-            <tr>
-                <td colspan="6" style="padding: 40px; text-align: center; color: #999;">
-                    No hay sanciones registradas
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-</div>
+                <div class="form-container">
+                    <h3>📋 Registro de Nueva Sanción Disciplinaria</h3>
+                    
+                    <form id="formSancion">
+                        <input type="hidden" id="bomberoSancionId" name="bomberoSancionId">
+                        
+                        <div class="form-grid">
+                            <div class="form-group full-width">
+                                <label for="tipoSancion" class="required">Tipo de Sanción Disciplinaria</label>
+                                <select id="tipoSancion" name="tipoSancion" required class="tipo-sancion-select">
+                                    <option value="">Seleccione el tipo de sanción</option>
+                                    <option value="renuncia">📝 Renuncia</option>
+                                    <option value="suspension">⏸️ Suspensión</option>
+                                    <option value="separacion">↗️ Separación</option>
+                                    <option value="expulsion">❌ Expulsión</option>
+                                </select>
+                                <div class="error" id="error-tipoSancion"></div>
+                            </div>
 
-<div style="margin-top: 20px; text-align: center;">
-    <a href="{% url 'sistema' %}" class="btn btn-secondary">← Volver al Sistema</a>
-</div>
-{% endblock %}
+                            <div class="form-group">
+                                <label for="companiaAutoridad" class="opcional">Compañía Responsable</label>
+                                <input type="text" id="companiaAutoridad" name="companiaAutoridad" 
+                                       placeholder="Especificar si la sanción es impuesta por compañía">
+                                <div class="error" id="error-companiaAutoridad"></div>
+                            </div>
+
+                            <div class="form-group" id="grupo-autoridadSancionatoria">
+                                <label for="autoridadSancionatoria" class="opcional">Autoridad Sancionatoria</label>
+                                <select id="autoridadSancionatoria" name="autoridadSancionatoria">
+                                    <option value="">Seleccione autoridad sancionatoria (opcional)</option>
+                                    <option value="Consejo Superior de Disciplina">Consejo Superior de Disciplina</option>
+                                    <option value="Consejo de Disciplina de Cía">Consejo de Disciplina de Cía</option>
+                                    <option value="Capitanía">Capitanía</option>
+                                    <option value="Comandancia">Comandancia</option>
+                                    <option value="Directorio">Directorio</option>
+                                </select>
+                                <div class="error" id="error-autoridadSancionatoria"></div>
+                            </div>
+
+                            <div class="form-group" id="grupo-fechaDesde">
+                                <label for="fechaDesde" class="required">Fecha de Inicio</label>
+                                <input type="date" id="fechaDesde" name="fechaDesde" required>
+                                <div class="error" id="error-fechaDesde"></div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="diasSancion" class="opcional">Días de Sanción</label>
+                                <input type="number" id="diasSancion" name="diasSancion" min="1" max="365" 
+                                       placeholder="Número de días">
+                                <div class="error" id="error-diasSancion"></div>
+                                <div class="info-ayuda">
+                                    ⚡ Si especifica los días de sanción, la fecha de término se calculará automáticamente
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="fechaHasta" class="opcional">Fecha de Término</label>
+                                <input type="date" id="fechaHasta" name="fechaHasta">
+                                <div class="error" id="error-fechaHasta"></div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="oficioNumero" class="required">Identificador del Oficio</label>
+                                <input type="text" id="oficioNumero" name="oficioNumero" required 
+                                       placeholder="ID único del documento oficial">
+                                <div class="error" id="error-oficioNumero"></div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="fechaOficio" class="opcional">Fecha de Registro Oficial</label>
+                                <input type="date" id="fechaOficio" name="fechaOficio" readonly 
+                                       class="campo-automatico">
+                                <div class="error" id="error-fechaOficio"></div>
+                                <div class="info-ayuda">
+                                    📅 Se establece automáticamente con la fecha actual
+                                </div>
+                            </div>
+
+                            <div class="form-group full-width">
+                                <label for="motivo" class="required">Descripción del Motivo</label>
+                                <textarea id="motivo" name="motivo" required rows="4" 
+                                          placeholder="Describa detalladamente el motivo y circunstancias de la sanción disciplinaria"></textarea>
+                                <div class="error" id="error-motivo"></div>
+                            </div>
+
+                            <div class="form-group full-width">
+                                <label for="documentoOficio" class="opcional">📎 Adjuntar Documento del Oficio</label>
+                                <input type="file" 
+                                       id="documentoOficio" 
+                                       name="documentoOficio" 
+                                       accept="image/*,.pdf,.doc,.docx">
+                                <div class="info-ayuda" style="margin-top: 8px;">
+                                    📄 Puede adjuntar el documento oficial de la sanción (PDF, imagen o Word). Máximo 10MB.
+                                </div>
+                                <div id="previewDocumento" class="preview-documento" style="display: none; margin-top: 15px;">
+                                    <img id="previewImageDocumento" src="" alt="Vista previa" style="max-width: 200px; max-height: 200px; display: none; border-radius: 8px; margin-bottom: 10px;">
+                                    <p id="previewFileNameDocumento" style="font-size: 0.9rem; color: #666;"></p>
+                                </div>
+                                <div class="error" id="error-documentoOficio"></div>
+                            </div>
+                        </div>
+
+                        <div class="buttons">
+                            <button type="submit" class="btn btn-sancion">✅ Registrar Sanción</button>
+                            <button type="button" class="btn btn-secondary" onclick="sancionesSistema.limpiarFormulario()">Limpiar Formulario</button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="list-container">
+                    <div class="list-header">
+                        <h3>📚 Historial de Sanciones Disciplinarias</h3>
+                        <div class="acciones-lista">
+                            <button type="button" class="btn btn-excel" onclick="sancionesSistema.exportarExcel()">
+                                📊 Descargar Excel
+                            </button>
+                            <button type="button" class="btn btn-pdf" onclick="sancionesSistema.generarPDF()">
+                                📄 Generar Ficha PDF
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="contador">
+                        Total de sanciones registradas: <strong id="totalSanciones">0</strong>
+                    </div>
+                    
+                    <div id="listaSanciones" class="lista-items"></div>
+                </div>
+
+                <div class="navigation-buttons">
+                    <button type="button" class="btn btn-volver" onclick="sancionesSistema.volverAlSistema()">
+                        ← Regresar al Sistema Principal
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="{% static 'js/auth_django.js' %}"></script>
+    <script src="{% static 'js/utils.js' %}"></script>
+    <script src="{% static 'js/sanciones-django.js' %}?v=2.1"></script>
+    <script src="{% static 'js/cargar-logo-auto.js' %}?v=1.0"></script>
+</body>
+</html>
