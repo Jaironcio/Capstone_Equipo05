@@ -122,47 +122,55 @@ function generarMenuSegunRol(role) {
     // ASISTENCIA (para todos EXCEPTO Tesorero y Secretario)
     if (role !== 'Tesorero' && role !== 'Secretario') {
         const asistenciaItems = [];
-        
-        // Registrar asistencia (SOLO Capitán y Ayudante)
-        if (['Capitán', 'Ayudante'].includes(role)) {
+
+        // Registrar asistencia (Capitán, Ayudante Y SUPER ADMIN)
+        if (['Capitán', 'Ayudante', 'Super Administrador'].includes(role)) {
             asistenciaItems.push(
                 { icono: '✅', texto: 'Registrar Asistencia', url: '/tipos-asistencia.html' }
             );
         }
-        
+
         // Historial (para todos los roles excepto Tesorero y Secretario)
         asistenciaItems.push(
             { icono: '📊', texto: 'Historial', url: '/historial-asistencias.html' }
         );
-        
-        // Detalle Emergencias (Capitán, Ayudante y Director)
-        if (['Capitán', 'Ayudante', 'Director'].includes(role)) {
+
+        // Detalle Emergencias (Capitán, Ayudante, Director Y SUPER ADMIN)
+        if (['Capitán', 'Ayudante', 'Director', 'Super Administrador'].includes(role)) {
             asistenciaItems.push(
                 { icono: '🚒', texto: 'Detalle Emergencias', url: '/historial-emergencias.html' }
             );
         }
-        
+
         // Ciclos de Asistencia (solo Super Admin)
         if (['Super Administrador'].includes(role)) {
             asistenciaItems.push(
                 { icono: '🔄', texto: 'Ciclos de Asistencia', url: '/admin-ciclos.html' }
             );
         }
-        
+
         menuItems.push({
             titulo: 'ASISTENCIA',
             items: asistenciaItems
         });
     }
 
-    // OPERACIONES (solo Super Admin)
+    // UNIFORMES (solo Super Admin)
     if (['Super Administrador'].includes(role)) {
         menuItems.push({
-            titulo: 'OPERACIONES',
+            titulo: 'UNIFORMES',
             items: [
-                { icono: '📝', texto: 'Ingresar Uniforme', url: '/ingresar-uniforme.html' },
-                { icono: '📋', texto: 'Registrar Entrega', url: '/registrar-entrega-uniforme.html' },
-                { icono: '🔄', texto: 'Registrar Devolución', url: '/registrar-devolucion-uniforme.html' }
+                { icono: '👕', texto: 'Gestión de Uniformes', url: '/uniformes.html' }
+            ]
+        });
+    }
+
+    // CARGA MASIVA (solo Super Admin)
+    if (['Super Administrador'].includes(role)) {
+        menuItems.push({
+            titulo: 'ADMINISTRACIÓN',
+            items: [
+                { icono: '📤', texto: 'Carga Masiva de Voluntarios', url: '/carga-masiva.html' }
             ]
         });
     }
@@ -198,16 +206,28 @@ function generarMenuSegunRol(role) {
     }
 
     // CONFIGURACIÓN (para todos)
+    const configItems = [
+        {
+            icono: '🏢',
+            texto: 'Logo Compañía (PDFs)',
+            url: '#',
+            onclick: 'abrirModalLogoCompania()'
+        }
+    ];
+
+    // Panel de Gestión de Usuarios (solo Super Admin)
+    if (['Super Administrador'].includes(role)) {
+        configItems.push({
+            icono: '👤',
+            texto: 'Gestión de Usuarios',
+            url: '#',
+            onclick: 'abrirPanelGestionUsuarios()'
+        });
+    }
+
     menuItems.push({
         titulo: 'CONFIGURACIÓN',
-        items: [
-            { 
-                icono: '🏢', 
-                texto: 'Logo Compañía (PDFs)', 
-                url: '#',
-                onclick: 'abrirModalLogoCompania()'
-            }
-        ]
+        items: configItems
     });
 
     // Generar HTML con widgets limpios
@@ -1063,7 +1083,252 @@ setInterval(() => {
     }
 }, 30000);
 
+// ==================== GESTIÓN DE USUARIOS (SUPER ADMIN) ====================
+
+async function abrirPanelGestionUsuarios() {
+    console.log('[ADMIN] Abriendo panel de gestión de usuarios...');
+
+    // Crear modal con loader
+    const modalHTML = `
+        <div id="modalGestionUsuarios" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 10000; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(5px); overflow-y: auto; padding: 20px;">
+            <div style="background: linear-gradient(to bottom, #ffffff 0%, #f9fafb 100%); padding: 35px; border-radius: 20px; max-width: 900px; width: 95%; max-height: 90vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.8);">
+
+                <!-- Header -->
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; padding-bottom: 20px; border-bottom: 3px solid #e5e7eb;">
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <div style="background: linear-gradient(135deg, #3b82f6, #2563eb); width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">
+                            👤
+                        </div>
+                        <h2 style="margin: 0; color: #1f2937; font-size: 1.7rem; font-weight: 700;">Gestión de Usuarios</h2>
+                    </div>
+                    <button onclick="cerrarPanelGestionUsuarios()" style="background: #f3f4f6; border: none; font-size: 1.8rem; cursor: pointer; color: #6b7280; padding: 8px 12px; line-height: 1; border-radius: 8px; transition: all 0.3s;" onmouseover="this.style.background='#e5e7eb'" onmouseout="this.style.background='#f3f4f6'">&times;</button>
+                </div>
+
+                <!-- Loader -->
+                <div id="loaderUsuarios" style="text-align: center; padding: 50px;">
+                    <div style="font-size: 3.5em; margin-bottom: 15px; animation: pulse 1.5s infinite;">⏳</div>
+                    <p style="font-size: 1.1em; font-weight: 500; color: #6b7280;">Cargando usuarios...</p>
+                </div>
+
+                <!-- Lista de usuarios (se llenará con JS) -->
+                <div id="listaUsuarios" style="display: none;"></div>
+
+            </div>
+        </div>
+    `;
+
+    document.body.insertAdjacentHTML('beforeend', modalHTML);
+
+    // Cargar usuarios
+    try {
+        const response = await fetch('/api/auth/users/', {
+            credentials: 'include'
+        });
+
+        if (!response.ok) {
+            throw new Error('Error al obtener usuarios');
+        }
+
+        const usuarios = await response.json();
+        console.log('[ADMIN] Usuarios obtenidos:', usuarios);
+
+        // Ocultar loader
+        document.getElementById('loaderUsuarios').style.display = 'none';
+
+        // Mostrar lista
+        const listaUsuarios = document.getElementById('listaUsuarios');
+        listaUsuarios.style.display = 'block';
+
+        let htmlUsuarios = '';
+        usuarios.forEach((user, index) => {
+            const roleColor = {
+                'Super Administrador': '#3b82f6',
+                'Director': '#8b5cf6',
+                'Secretario': '#10b981',
+                'Tesorero': '#1f2937',
+                'Capitán': '#dc2626',
+                'Ayudante': '#f59e0b'
+            }[user.role] || '#6b7280';
+
+            htmlUsuarios += `
+                <div style="background: white; border: 2px solid #e5e7eb; border-radius: 12px; padding: 20px; margin-bottom: 15px; transition: all 0.3s; box-shadow: 0 2px 4px rgba(0,0,0,0.05);" onmouseover="this.style.borderColor='#3b82f6'; this.style.boxShadow='0 4px 12px rgba(59, 130, 246, 0.2)'" onmouseout="this.style.borderColor='#e5e7eb'; this.style.boxShadow='0 2px 4px rgba(0,0,0,0.05)'">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div style="flex: 1;">
+                            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
+                                <div style="width: 40px; height: 40px; border-radius: 50%; background: ${roleColor}; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 1.2rem;">
+                                    ${user.username.charAt(0).toUpperCase()}
+                                </div>
+                                <div>
+                                    <div style="font-weight: 700; font-size: 1.1rem; color: #1f2937;">@${user.username}</div>
+                                    <div style="display: inline-block; background: ${roleColor}; color: white; padding: 3px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: 600; margin-top: 4px;">${user.role}</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <button onclick="cambiarPasswordUsuario('${user.username}', '${user.role}')" style="background: linear-gradient(135deg, #f59e0b, #d97706); color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 0.95em; box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3); transition: all 0.3s;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 12px rgba(245, 158, 11, 0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(245, 158, 11, 0.3)'">
+                                🔑 Cambiar Contraseña
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+
+        listaUsuarios.innerHTML = htmlUsuarios;
+
+    } catch (error) {
+        console.error('[ADMIN] Error:', error);
+        document.getElementById('loaderUsuarios').innerHTML = `
+            <div style="text-align: center; padding: 30px;">
+                <div style="font-size: 3em; margin-bottom: 15px;">❌</div>
+                <p style="color: #ef4444; font-weight: 600;">Error al cargar usuarios</p>
+                <p style="color: #6b7280; font-size: 0.9em;">${error.message}</p>
+            </div>
+        `;
+    }
+}
+
+function cerrarPanelGestionUsuarios() {
+    const modal = document.getElementById('modalGestionUsuarios');
+    if (modal) {
+        modal.remove();
+    }
+}
+
+function cambiarPasswordUsuario(username, role) {
+    console.log('[ADMIN] Cambiar password de:', username);
+
+    // Crear modal para cambiar contraseña
+    const modalHTML = `
+        <div id="modalCambiarPassword" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 10001; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(5px);">
+            <div style="background: white; padding: 35px; border-radius: 20px; max-width: 500px; width: 90%; box-shadow: 0 20px 60px rgba(0,0,0,0.5);">
+
+                <!-- Header -->
+                <div style="text-align: center; margin-bottom: 25px; padding-bottom: 20px; border-bottom: 3px solid #e5e7eb;">
+                    <div style="display: inline-block; background: linear-gradient(135deg, #f59e0b, #d97706); width: 56px; height: 56px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; margin-bottom: 12px;">
+                        🔑
+                    </div>
+                    <h2 style="margin: 0; color: #1f2937; font-size: 1.6rem; font-weight: 700;">Cambiar Contraseña</h2>
+                    <p style="margin: 8px 0 0 0; color: #6b7280; font-size: 0.95rem;">Usuario: <strong>@${username}</strong> (${role})</p>
+                </div>
+
+                <!-- Formulario -->
+                <div style="margin-bottom: 25px;">
+                    <label style="display: block; color: #374151; font-weight: 600; margin-bottom: 8px; font-size: 0.95rem;">Nueva Contraseña:</label>
+                    <input type="password" id="inputNuevaPassword" placeholder="Escribe la nueva contraseña" style="width: 100%; padding: 12px 15px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 1rem; transition: all 0.3s; box-sizing: border-box;" onfocus="this.style.borderColor='#3b82f6'; this.style.boxShadow='0 0 0 3px rgba(59, 130, 246, 0.1)'" onblur="this.style.borderColor='#e5e7eb'; this.style.boxShadow='none'">
+
+                    <label style="display: block; color: #374151; font-weight: 600; margin: 15px 0 8px 0; font-size: 0.95rem;">Confirmar Contraseña:</label>
+                    <input type="password" id="inputConfirmarPassword" placeholder="Confirma la nueva contraseña" style="width: 100%; padding: 12px 15px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 1rem; transition: all 0.3s; box-sizing: border-box;" onfocus="this.style.borderColor='#3b82f6'; this.style.boxShadow='0 0 0 3px rgba(59, 130, 246, 0.1)'" onblur="this.style.borderColor='#e5e7eb'; this.style.boxShadow='none'">
+
+                    <div id="errorPassword" style="display: none; background: #fee2e2; border-left: 4px solid #ef4444; padding: 12px; border-radius: 8px; margin-top: 15px; color: #991b1b; font-size: 0.9rem; font-weight: 500;"></div>
+                </div>
+
+                <!-- Botones -->
+                <div style="display: flex; gap: 12px;">
+                    <button onclick="cerrarModalCambiarPassword()" style="flex: 1; background: #f3f4f6; color: #6b7280; border: none; padding: 12px 20px; border-radius: 10px; cursor: pointer; font-weight: 600; font-size: 1em; transition: all 0.3s;" onmouseover="this.style.background='#e5e7eb'" onmouseout="this.style.background='#f3f4f6'">
+                        Cancelar
+                    </button>
+                    <button onclick="confirmarCambioPassword('${username}')" style="flex: 1; background: linear-gradient(135deg, #10b981, #059669); color: white; border: none; padding: 12px 20px; border-radius: 10px; cursor: pointer; font-weight: 600; font-size: 1em; box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3); transition: all 0.3s;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 12px rgba(16, 185, 129, 0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(16, 185, 129, 0.3)'">
+                        ✓ Cambiar
+                    </button>
+                </div>
+            </div>
+        </div>
+    `;
+
+    document.body.insertAdjacentHTML('beforeend', modalHTML);
+
+    // Focus en el primer input
+    setTimeout(() => document.getElementById('inputNuevaPassword').focus(), 100);
+}
+
+function cerrarModalCambiarPassword() {
+    const modal = document.getElementById('modalCambiarPassword');
+    if (modal) {
+        modal.remove();
+    }
+}
+
+async function confirmarCambioPassword(username) {
+    const password1 = document.getElementById('inputNuevaPassword').value;
+    const password2 = document.getElementById('inputConfirmarPassword').value;
+    const errorDiv = document.getElementById('errorPassword');
+
+    // Validaciones
+    if (!password1 || !password2) {
+        errorDiv.textContent = 'Por favor completa ambos campos';
+        errorDiv.style.display = 'block';
+        return;
+    }
+
+    if (password1 !== password2) {
+        errorDiv.textContent = 'Las contraseñas no coinciden';
+        errorDiv.style.display = 'block';
+        return;
+    }
+
+    if (password1.length < 4) {
+        errorDiv.textContent = 'La contraseña debe tener al menos 4 caracteres';
+        errorDiv.style.display = 'block';
+        return;
+    }
+
+    // Ocultar error
+    errorDiv.style.display = 'none';
+
+    // Deshabilitar botón mientras se procesa
+    const btnCambiar = event.target;
+    const textoOriginal = btnCambiar.textContent;
+    btnCambiar.textContent = '⏳ Cambiando...';
+    btnCambiar.disabled = true;
+
+    try {
+        console.log('[ADMIN] Cambiando contraseña para:', username);
+
+        // Llamar al endpoint de Django
+        const response = await fetch('/api/auth/change-password/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            credentials: 'include',
+            body: JSON.stringify({
+                username: username,
+                new_password: password1
+            })
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.success) {
+            // Éxito
+            alert(`✅ Contraseña de @${username} cambiada correctamente\n\nNueva contraseña: ${password1}\n\n⚠️ Guarda esta contraseña en un lugar seguro`);
+
+            // Cerrar modales
+            cerrarModalCambiarPassword();
+            cerrarPanelGestionUsuarios();
+        } else {
+            // Error del servidor
+            errorDiv.textContent = data.error || 'Error al cambiar contraseña';
+            errorDiv.style.display = 'block';
+            btnCambiar.textContent = textoOriginal;
+            btnCambiar.disabled = false;
+        }
+    } catch (error) {
+        console.error('[ADMIN] Error al cambiar contraseña:', error);
+        errorDiv.textContent = 'Error de conexión con el servidor';
+        errorDiv.style.display = 'block';
+        btnCambiar.textContent = textoOriginal;
+        btnCambiar.disabled = false;
+    }
+}
+
 // Exportar funciones globales
+window.abrirPanelGestionUsuarios = abrirPanelGestionUsuarios;
+window.cerrarPanelGestionUsuarios = cerrarPanelGestionUsuarios;
+window.cambiarPasswordUsuario = cambiarPasswordUsuario;
+window.cerrarModalCambiarPassword = cerrarModalCambiarPassword;
+window.confirmarCambioPassword = confirmarCambioPassword;
 window.mostrarDeudoresDesdeWidget = mostrarDeudoresDesdeWidget;
 window.cerrarModalDeudores = cerrarModalDeudores;
 window.verListadoCuotas = verListadoCuotas;

@@ -6,7 +6,7 @@ from django.urls import path, include
 from django.views.generic import TemplateView
 from django.conf import settings
 from django.conf.urls.static import static
-from voluntarios import cuotas_simple_views, ciclos_cuotas_simple_views, pdf_cuotas_views, configuracion_cuotas_simple_views, estado_cuotas_simple_views, beneficios_simple_views, voluntarios_simple_views, deudores_views
+from voluntarios import cuotas_simple_views, ciclos_cuotas_simple_views, pdf_cuotas_views, configuracion_cuotas_simple_views, estado_cuotas_simple_views, beneficios_simple_views, voluntarios_simple_views, deudores_views, carga_masiva_views
 
 # Helper para servir templates
 def template(name):
@@ -55,19 +55,24 @@ urlpatterns = [
     path('api/voluntarios/deudores-cuotas-listado/', deudores_views.listar_deudores_cuotas, name='deudores_cuotas_listado_direct'),
     path('api/voluntarios/deudores-beneficios-listado/', deudores_views.listar_deudores_beneficios, name='deudores_beneficios_listado_direct'),
     
+    # Carga Masiva - Importación desde Excel (SIN AUTENTICACIÓN)
+    path('api/voluntarios/descargar-plantilla-masiva/', carga_masiva_views.descargar_plantilla_masiva, name='descargar_plantilla_masiva_direct'),
+    path('api/voluntarios/importar-masiva/', carga_masiva_views.importar_masiva, name='importar_masiva_direct'),
+    
     # API REST (include de DRF)
     path('api/', include('voluntarios.urls')),
     
     # ==================== LOGIN PRIMERO ====================
-    path('', template('index.html'), name='home'),
+    path('', template('index.html'), name='home'),  # Login principal
     
     # ==================== TEST DE AUTENTICACIÓN ====================
-    path('test-auth.html', template('test_auth.html'), name='test_auth'),
-    path('sistema-debug.html', template('sistema_debug.html'), name='sistema_debug'),
+    # MOVIDOS A OBSOLETOS - 2025-11-25
+    # path('test-auth.html', template('test_auth.html'), name='test_auth'),
+    # path('sistema-debug.html', template('sistema_debug.html'), name='sistema_debug'),
     
     # ==================== SISTEMA PRINCIPAL ====================
     path('sistema.html', template('voluntarios/sistema.html'), name='sistema'),
-    path('dashboard.html', template('dashboard.html'), name='dashboard'),
+    # path('dashboard.html', template('dashboard.html'), name='dashboard'),  # MOVIDO A OBSOLETOS 2025-11-25
     
     # ==================== VOLUNTARIOS ====================
     path('crear-bombero.html', template('voluntarios/crear-bombero.html'), name='crear_bombero'),
@@ -75,7 +80,7 @@ urlpatterns = [
     path('reintegracion-voluntario.html', template('voluntarios/reintegracion-voluntario.html'), name='reintegracion'),
     
     # ==================== ASISTENCIAS ====================
-    path('asistencias.html', template('asistencias.html'), name='asistencias'),  # NUEVO MÓDULO DJANGO
+    # path('asistencias.html', template('asistencias.html'), name='asistencias'),  # MOVIDO A OBSOLETOS 2025-11-26
     path('registro-asistencia.html', template('asistencias/registro-asistencia.html'), name='registro_asistencia'),
     path('registro-asamblea.html', template('asistencias/registro-asamblea.html'), name='registro_asamblea'),
     path('registro-ejercicios.html', template('asistencias/registro-ejercicios.html'), name='registro_ejercicios'),
@@ -97,6 +102,9 @@ urlpatterns = [
     path('uniformes.html', template('uniformes/lista.html'), name='uniformes'),
     path('tabla-uniformes-voluntario.html', template('uniformes/tabla-voluntario.html'), name='tabla_uniformes'),
     
+    # ==================== CARGA MASIVA ====================
+    path('carga-masiva.html', template('voluntarios/carga-masiva.html'), name='carga_masiva'),
+    
     # ==================== FINANZAS ====================
     path('cuotas-beneficios.html', template('tesoreria/cuotas-beneficios.html'), name='cuotas_beneficios'),
     path('beneficios.html', template('tesoreria/beneficios.html'), name='beneficios'),
@@ -108,14 +116,15 @@ urlpatterns = [
     path('admin-ciclos.html', template('admin/admin-ciclos.html'), name='admin_ciclos'),
     path('admin-ciclos-cuotas.html', template('admin/ciclos-cuotas.html'), name='admin_ciclos_cuotas'),
     path('tipos-asistencia.html', template('asistencias/tipos-asistencia.html'), name='tipos_asistencia'),
-    path('generar-datos-prueba.html', template('generar-datos-prueba.html'), name='generar_datos'),
-    path('limpiar-datos.html', template('limpiar-datos.html'), name='limpiar_datos'),
-    path('debug-bomberos.html', template('debug-bomberos.html'), name='debug_bomberos'),
-    path('limpiar-ejemplos.html', template('limpiar-ejemplos.html'), name='limpiar_ejemplos'),
-    path('arreglar-ids-duplicados.html', template('arreglar-ids-duplicados.html'), name='arreglar_ids'),
-    path('arreglar-nombres.html', template('arreglar-nombres.html'), name='arreglar_nombres'),
-    path('limpiar-cargos-duplicados.html', template('limpiar-cargos-duplicados.html'), name='limpiar_cargos'),
-    path('verificar-asignaciones.html', template('verificar-asignaciones.html'), name='verificar_asignaciones'),
+    # HERRAMIENTAS ADMIN MOVIDAS A OBSOLETOS - 2025-11-25
+    # path('generar-datos-prueba.html', template('generar-datos-prueba.html'), name='generar_datos'),
+    # path('limpiar-datos.html', template('limpiar-datos.html'), name='limpiar_datos'),
+    # path('debug-bomberos.html', template('debug-bomberos.html'), name='debug_bomberos'),
+    # path('limpiar-ejemplos.html', template('limpiar-ejemplos.html'), name='limpiar_ejemplos'),
+    # path('arreglar-ids-duplicados.html', template('arreglar-ids-duplicados.html'), name='arreglar_ids'),
+    # path('arreglar-nombres.html', template('arreglar-nombres.html'), name='arreglar_nombres'),
+    # path('limpiar-cargos-duplicados.html', template('limpiar-cargos-duplicados.html'), name='limpiar_cargos'),
+    # path('verificar-asignaciones.html', template('verificar-asignaciones.html'), name='verificar_asignaciones'),
     path('reasignar-beneficios-manual.html', template('tesoreria/reasignar-beneficios-manual.html'), name='reasignar_beneficios'),
     path('test-ranking-externos.html', template('asistencias/test-ranking-externos.html'), name='test_ranking'),
 ]

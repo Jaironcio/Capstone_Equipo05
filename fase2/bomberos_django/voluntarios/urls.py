@@ -73,6 +73,7 @@ urlpatterns = [
     path('auth/check/', auth_views.check_auth_view, name='api_check_auth'),
     path('auth/permissions/', auth_views.get_permissions_view, name='api_permissions'),
     path('auth/users/', auth_views.list_users_view, name='api_list_users'),
+    path('auth/change-password/', auth_views.change_password_view, name='api_change_password'),
     
     # Finanzas - Endpoints SIMPLES
     path('movimientos-financieros/', finanzas_views.movimientos_api, name='movimientos_financieros'),
