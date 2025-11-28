@@ -3,6 +3,9 @@ class SistemaFelicitaciones {
     constructor() {
         this.bomberoActual = null;
         this.felicitaciones = [];
+        // Paginación
+        this.paginaActual = 1;
+        this.itemsPorPagina = 10;
         this.init();
     }
 
@@ -381,9 +384,67 @@ class SistemaFelicitaciones {
         console.log('[FELICITACIONES] Felicitaciones ordenadas:', felicitacionesOrdenadas.length);
         
         if (total) total.textContent = this.felicitaciones.length;
-        lista.innerHTML = felicitacionesOrdenadas.map(f => this.generarHTMLFelicitacion(f)).join('');
+
+        // Calcular paginación
+        const totalPaginas = Math.ceil(felicitacionesOrdenadas.length / this.itemsPorPagina);
+        if (this.paginaActual > totalPaginas) this.paginaActual = 1;
+        
+        const inicio = (this.paginaActual - 1) * this.itemsPorPagina;
+        const fin = inicio + this.itemsPorPagina;
+        const felicitacionesPaginadas = felicitacionesOrdenadas.slice(inicio, fin);
+
+        let html = felicitacionesPaginadas.map(f => this.generarHTMLFelicitacion(f)).join('');
+
+        // Agregar controles de paginación si hay más de una página
+        if (totalPaginas > 1) {
+            html += `
+                <div class="paginacion-container" style="display: flex; justify-content: center; align-items: center; gap: 10px; margin-top: 20px; padding: 15px; background: #f5f5f5; border-radius: 8px;">
+                    <button onclick="felicitacionesSistema.irAPagina(1)" ${this.paginaActual === 1 ? 'disabled' : ''} style="padding: 8px 12px; background: #6c757d; color: white; border: none; border-radius: 6px; cursor: pointer;">
+                        ⏮️ Primera
+                    </button>
+                    <button onclick="felicitacionesSistema.paginaAnterior()" ${this.paginaActual === 1 ? 'disabled' : ''} style="padding: 8px 12px; background: #6c757d; color: white; border: none; border-radius: 6px; cursor: pointer;">
+                        ◀️ Anterior
+                    </button>
+                    <span style="padding: 8px 16px; background: white; border-radius: 6px; font-weight: bold; color: #333;">
+                        Página ${this.paginaActual} de ${totalPaginas}
+                    </span>
+                    <button onclick="felicitacionesSistema.paginaSiguiente()" ${this.paginaActual === totalPaginas ? 'disabled' : ''} style="padding: 8px 12px; background: #6c757d; color: white; border: none; border-radius: 6px; cursor: pointer;">
+                        Siguiente ▶️
+                    </button>
+                    <button onclick="felicitacionesSistema.irAPagina(${totalPaginas})" ${this.paginaActual === totalPaginas ? 'disabled' : ''} style="padding: 8px 12px; background: #6c757d; color: white; border: none; border-radius: 6px; cursor: pointer;">
+                        Última ⏭️
+                    </button>
+                </div>
+                <div style="text-align: center; color: #666; font-size: 0.9rem; margin-top: 10px;">
+                    Mostrando ${inicio + 1}-${Math.min(fin, felicitacionesOrdenadas.length)} de ${felicitacionesOrdenadas.length} felicitaciones
+                </div>
+            `;
+        }
+
+        lista.innerHTML = html;
         
         console.log('[FELICITACIONES] Renderizado completado');
+    }
+
+    // Métodos de paginación
+    paginaAnterior() {
+        if (this.paginaActual > 1) {
+            this.paginaActual--;
+            this.renderizarFelicitaciones();
+        }
+    }
+
+    paginaSiguiente() {
+        const totalPaginas = Math.ceil(this.felicitaciones.length / this.itemsPorPagina);
+        if (this.paginaActual < totalPaginas) {
+            this.paginaActual++;
+            this.renderizarFelicitaciones();
+        }
+    }
+
+    irAPagina(pagina) {
+        this.paginaActual = pagina;
+        this.renderizarFelicitaciones();
     }
 
     generarHTMLFelicitacion(felicitacion) {

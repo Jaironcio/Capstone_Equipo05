@@ -1,5 +1,216 @@
 /* Estilos personalizados para el módulo de Cargos */
 
+/* Fondo general de la página */
+.cargos-page {
+    background: linear-gradient(135deg, #1a237e 0%, #283593 50%, #3949ab 100%);
+    min-height: 100vh;
+}
+
+.cargos-page .page-content {
+    background: #f5f5f5;
+    border-radius: 12px;
+    padding: 30px;
+    margin-top: 20px;
+}
+
+.cargos-page .page-header {
+    background: transparent;
+    color: white;
+    padding: 20px 0;
+}
+
+.cargos-page .page-header h2 {
+    color: white;
+    margin: 0;
+}
+
+.cargos-page .page-header p {
+    color: rgba(255, 255, 255, 0.8);
+    margin: 5px 0 0 0;
+}
+
+/* Información del bombero */
+.bombero-info {
+    background: white;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.bombero-info h3 {
+    color: #1a237e;
+    margin-bottom: 15px;
+    border-left: 4px solid #1a237e;
+    padding-left: 10px;
+}
+
+/* Formulario */
+.cargos-page .form-container {
+    background: white;
+    border-radius: 10px;
+    padding: 25px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.cargos-page .form-container h3 {
+    color: #1a237e;
+    margin-bottom: 20px;
+    border-left: 4px solid #ff9800;
+    padding-left: 10px;
+}
+
+/* Nota informativa */
+.info-nota {
+    background: #fff3e0;
+    border-left: 4px solid #ff9800;
+    padding: 15px;
+    border-radius: 0 8px 8px 0;
+    margin: 20px 0;
+    color: #e65100;
+}
+
+/* Botones de acción */
+.cargos-page .buttons {
+    display: flex;
+    gap: 15px;
+    margin-top: 20px;
+    justify-content: center;
+}
+
+.btn-cargo {
+    background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%);
+    color: white;
+    border: none;
+    padding: 12px 30px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-cargo:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 152, 0, 0.4);
+}
+
+/* Botón volver en header */
+.cargos-page .page-header .btn-secondary {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    border: 2px solid white;
+    padding: 8px 20px;
+    border-radius: 6px;
+    margin-bottom: 15px;
+}
+
+.cargos-page .page-header .btn-secondary:hover {
+    background: white;
+    color: #1a237e;
+}
+
+/* Navegación inferior */
+.navigation-buttons {
+    text-align: center;
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid #e0e0e0;
+}
+
+.btn-volver,
+.btn.btn-volver {
+    background: #6c757d !important;
+    color: white !important;
+    border: none !important;
+    padding: 12px 30px !important;
+    border-radius: 8px !important;
+    font-weight: 600 !important;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-block;
+    text-decoration: none;
+}
+
+.btn-volver:hover,
+.btn.btn-volver:hover {
+    background: #5a6268 !important;
+    transform: translateY(-2px);
+    color: white !important;
+}
+
+/* Grid del formulario */
+.cargos-page .form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
+.cargos-page .form-group {
+    margin-bottom: 15px;
+}
+
+.cargos-page .form-group.full-width {
+    grid-column: 1 / -1;
+}
+
+.cargos-page .form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #333;
+}
+
+.cargos-page .form-group label.opcional::after {
+    content: " (opcional)";
+    font-weight: normal;
+    color: #999;
+    font-size: 0.85em;
+}
+
+.cargos-page .form-group input,
+.cargos-page .form-group select,
+.cargos-page .form-group textarea {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.cargos-page .form-group input:focus,
+.cargos-page .form-group select:focus,
+.cargos-page .form-group textarea:focus {
+    outline: none;
+    border-color: #ff9800;
+    box-shadow: 0 0 0 3px rgba(255, 152, 0, 0.1);
+}
+
+/* Datos del bombero */
+.bombero-datos {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+}
+
+.bombero-datos .dato-item {
+    padding: 10px;
+    background: #f8f9fa;
+    border-radius: 6px;
+}
+
+.bombero-datos .dato-label {
+    font-size: 0.85rem;
+    color: #666;
+    margin-bottom: 4px;
+}
+
+.bombero-datos .dato-valor {
+    font-weight: 600;
+    color: #333;
+}
+
 .cargo-card {
     background: white;
     border-radius: 8px;

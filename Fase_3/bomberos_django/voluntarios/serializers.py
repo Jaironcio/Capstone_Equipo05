@@ -1,6 +1,13 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
 from datetime import datetime
+import logging
+import sys
+
+# Configurar logging para que se muestre en consola
+logger = logging.getLogger(__name__)
+logging.basicConfig(level=logging.DEBUG, stream=sys.stdout, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+
 from .models import (
     Voluntario, Cargo, Sancion, TipoAsistencia, Asistencia, 
     Uniforme, PiezaUniforme, ContadorUniformes, Cuota, PagoCuota, 
@@ -66,6 +73,18 @@ class VoluntarioSerializer(serializers.ModelSerializer):
     
     def to_internal_value(self, data):
         """Mapear camelCase a snake_case ANTES de validar"""
+        from datetime import datetime
+        
+        # DEBUG: Escribir a archivo para verificar que se ejecuta
+        with open('debug_serializer.log', 'a') as f:
+            f.write(f"\n{'='*50}\n")
+            f.write(f"to_internal_value llamado: {datetime.now()}\n")
+            f.write(f"Data recibida: {list(data.keys()) if isinstance(data, dict) else type(data)}\n")
+            if isinstance(data, dict):
+                for k, v in data.items():
+                    if k != 'foto':
+                        f.write(f"  {k}: {v}\n")
+        
         try:
             # Crear un nuevo dict en lugar de copiar
             if isinstance(data, dict):
@@ -101,14 +120,59 @@ class VoluntarioSerializer(serializers.ModelSerializer):
                 'estadoBombero': 'estado_bombero',
             }
             
+            # Campos que son fechas y necesitan conversión
+            date_fields = ['fecha_nacimiento', 'fecha_ingreso']
+            
+            # Guardar campos mapeados para usarlos en create/update
+            # IMPORTANTE: Guardar ANTES de llamar a super() porque DRF puede filtrarlos
+            self._campos_especiales = {}
+            
+            with open('debug_serializer.log', 'a') as f:
+                f.write(f"\n--- MAPEO DE CAMPOS ---\n")
+            
             for camel, snake in field_mapping.items():
+                with open('debug_serializer.log', 'a') as f:
+                    f.write(f"Procesando {camel}: existe={camel in mapped_data}\n")
+                
                 if camel in mapped_data:
-                    mapped_data[snake] = mapped_data.pop(camel)
-                    print(f"[MAPPING] {camel} → {snake}: {mapped_data[snake]}")
+                    value = mapped_data.pop(camel)
+                    with open('debug_serializer.log', 'a') as f:
+                        f.write(f"  valor={value}, tipo={type(value)}\n")
+                    
+                    # Solo guardar si tiene valor (no vacío)
+                    if value and value != '':
+                        # Convertir fechas de string a date object
+                        if snake in date_fields:
+                            try:
+                                if isinstance(value, str):
+                                    value = datetime.strptime(value, '%Y-%m-%d').date()
+                                self._campos_especiales[snake] = value
+                                with open('debug_serializer.log', 'a') as f:
+                                    f.write(f"  GUARDADO DATE {snake}: {value}\n")
+                            except Exception as e:
+                                with open('debug_serializer.log', 'a') as f:
+                                    f.write(f"  ERROR DATE {snake}: {e}\n")
+                        else:
+                            self._campos_especiales[snake] = value
+                            with open('debug_serializer.log', 'a') as f:
+                                f.write(f"  GUARDADO {snake}: {value}\n")
+                        # También agregar a mapped_data para que DRF lo procese
+                        mapped_data[snake] = value
+                    else:
+                        with open('debug_serializer.log', 'a') as f:
+                            f.write(f"  {camel} está vacío, ignorando\n")
+            
+            with open('debug_serializer.log', 'a') as f:
+                f.write(f"_campos_especiales FINAL: {self._campos_especiales}\n")
+            
+            # DEBUG: mostrar todos los campos mapeados (sin caracteres especiales)
+            # print statements removidos para evitar errores de codificacion
             
             return super().to_internal_value(mapped_data)
         except Exception as e:
             print(f"[ERROR to_internal_value] {e}")
+            import traceback
+            traceback.print_exc()
             # Si falla, intentar con los datos originales (pero sin foto)
             if isinstance(data, dict) and 'foto' in data:
                 data_sin_foto = {k: v for k, v in data.items() if k != 'foto'}
@@ -117,10 +181,30 @@ class VoluntarioSerializer(serializers.ModelSerializer):
     
     def create(self, validated_data):
         """Crea un voluntario con lógica del p6p"""
-        print("[CREATE] Datos validados ANTES de procesar:")
-        for k, v in validated_data.items():
-            if k != 'foto':
-                print(f"  - {k}: {v}")
+        from datetime import datetime
+        
+        # DEBUG: Escribir a archivo
+        with open('debug_serializer.log', 'a') as f:
+            f.write(f"\n{'='*50}\n")
+            f.write(f"CREATE llamado: {datetime.now()}\n")
+            f.write(f"validated_data ANTES: {list(validated_data.keys())}\n")
+            for k, v in validated_data.items():
+                if k != 'foto':
+                    f.write(f"  {k}: {v}\n")
+            f.write(f"_campos_especiales: {getattr(self, '_campos_especiales', 'NO EXISTE')}\n")
+        
+        # IMPORTANTE: Agregar campos especiales que DRF pudo haber filtrado
+        # Estos son los campos mapeados de camelCase a snake_case
+        campos_especiales = getattr(self, '_campos_especiales', {})
+        if campos_especiales:
+            with open('debug_serializer.log', 'a') as f:
+                f.write(f"Agregando campos especiales: {campos_especiales}\n")
+            for campo, valor in campos_especiales.items():
+                # Siempre agregar si tienen valor, incluso si ya existen en validated_data
+                if valor is not None:
+                    validated_data[campo] = valor
+                    with open('debug_serializer.log', 'a') as f:
+                        f.write(f"  + FORZANDO {campo}: {valor}\n")
         
         # Extraer campos del p6p (camelCase) - DRF ya mapeó los campos con source=
         primer_nombre = validated_data.pop('primerNombre', '')
@@ -256,6 +340,15 @@ class VoluntarioSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         """Actualiza un voluntario con lógica del p6p"""
         print("[UPDATE] Datos validados:", {k: v for k, v in validated_data.items() if k not in ['foto']})
+        
+        # IMPORTANTE: Agregar campos especiales que DRF pudo haber filtrado
+        campos_especiales = getattr(self, '_campos_especiales', {})
+        if campos_especiales:
+            print(f"[UPDATE] Agregando campos especiales: {campos_especiales}")
+            for campo, valor in campos_especiales.items():
+                if valor is not None:
+                    validated_data[campo] = valor
+                    print(f"  + FORZANDO {campo}: {valor}")
         
         # Extraer campos del p6p (camelCase)
         primer_nombre = validated_data.pop('primerNombre', '')

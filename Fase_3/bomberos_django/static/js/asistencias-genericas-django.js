@@ -226,46 +226,68 @@ class SistemaAsistenciasGenericas {
     seleccionarTodos(categoria) {
         const containerMap = {
             'martir': 'listaMartires',
+            'martires': 'listaMartires',
             'generales': 'listaGenerales',
             'compania': 'listaCompania',
             'confianza': 'listaCargosConfianza',
             'insignes': 'listaInsignes',
             'honorariosCuerpo': 'listaHonorariosCuerpo',
+            'honorarioCuerpo': 'listaHonorariosCuerpo',
             'honorariosCia': 'listaHonorariosCia',
-            'voluntarios': 'listaVoluntarios'
+            'honorarioCia': 'listaHonorariosCia',
+            'voluntarios': 'listaVoluntarios',
+            'voluntario': 'listaVoluntarios'
         };
 
         const containerId = containerMap[categoria];
-        if (!containerId) return;
+        if (!containerId) {
+            console.warn(`[ASISTENCIAS] Categoría no encontrada: ${categoria}`);
+            return;
+        }
 
         const container = document.getElementById(containerId);
-        if (!container) return;
+        if (!container) {
+            console.warn(`[ASISTENCIAS] Container no encontrado: ${containerId}`);
+            return;
+        }
 
         const checkboxes = container.querySelectorAll('input[type="checkbox"]');
         checkboxes.forEach(cb => cb.checked = true);
+        console.log(`[ASISTENCIAS] Seleccionados todos en ${categoria}: ${checkboxes.length}`);
         this.actualizarEstadisticas();
     }
 
     deseleccionarTodos(categoria) {
         const containerMap = {
             'martir': 'listaMartires',
+            'martires': 'listaMartires',
             'generales': 'listaGenerales',
             'compania': 'listaCompania',
             'confianza': 'listaCargosConfianza',
             'insignes': 'listaInsignes',
             'honorariosCuerpo': 'listaHonorariosCuerpo',
+            'honorarioCuerpo': 'listaHonorariosCuerpo',
             'honorariosCia': 'listaHonorariosCia',
-            'voluntarios': 'listaVoluntarios'
+            'honorarioCia': 'listaHonorariosCia',
+            'voluntarios': 'listaVoluntarios',
+            'voluntario': 'listaVoluntarios'
         };
 
         const containerId = containerMap[categoria];
-        if (!containerId) return;
+        if (!containerId) {
+            console.warn(`[ASISTENCIAS] Categoría no encontrada: ${categoria}`);
+            return;
+        }
 
         const container = document.getElementById(containerId);
-        if (!container) return;
+        if (!container) {
+            console.warn(`[ASISTENCIAS] Container no encontrado: ${containerId}`);
+            return;
+        }
 
         const checkboxes = container.querySelectorAll('input[type="checkbox"]');
         checkboxes.forEach(cb => cb.checked = false);
+        console.log(`[ASISTENCIAS] Deseleccionados todos en ${categoria}: ${checkboxes.length}`);
         this.actualizarEstadisticas();
     }
 
@@ -746,6 +768,11 @@ class SistemaAsistenciasGenericas {
             descripcion,
             camposExtra
         };
+    }
+
+    // Alias para compatibilidad con diferentes nombres de función
+    guardarAsistencia() {
+        return this.guardarRegistro();
     }
 }
 

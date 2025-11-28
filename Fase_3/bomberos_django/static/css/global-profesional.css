@@ -189,31 +189,54 @@ body {
 }
 
 /* ==================== BOTÓN VOLVER PROFESIONAL ==================== */
-.btn-volver {
-    background: linear-gradient(135deg, #6c757d, #495057);
-    color: white;
-    padding: 12px 24px;
-    border: none;
-    border-radius: var(--radius-md);
-    font-size: 0.95rem;
-    font-weight: 600;
+.btn-volver,
+.btn.btn-volver,
+button.btn-volver,
+a.btn-volver {
+    background: linear-gradient(135deg, #6c757d, #495057) !important;
+    color: white !important;
+    padding: 12px 24px !important;
+    border: none !important;
+    border-radius: 8px !important;
+    font-size: 0.95rem !important;
+    font-weight: 600 !important;
     cursor: pointer;
-    transition: all var(--transition-base);
-    box-shadow: var(--shadow-sm);
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     display: inline-flex;
     align-items: center;
-    gap: var(--spacing-sm);
-    margin-top: var(--spacing-lg);
+    gap: 8px;
+    margin-top: 16px;
+    text-decoration: none !important;
 }
 
-.btn-volver:hover {
-    background: linear-gradient(135deg, #495057, #212529);
+.btn-volver:hover,
+.btn.btn-volver:hover,
+button.btn-volver:hover,
+a.btn-volver:hover {
+    background: linear-gradient(135deg, #495057, #212529) !important;
+    color: white !important;
     transform: translateY(-2px);
-    box-shadow: var(--shadow-md);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
 }
 
-.btn-volver:active {
+.btn-volver:active,
+.btn.btn-volver:active {
     transform: translateY(0);
+}
+
+/* Botón secundario también con estilos forzados */
+.btn-secondary,
+.btn.btn-secondary,
+button.btn-secondary {
+    background: linear-gradient(135deg, #6c757d, #495057) !important;
+    color: white !important;
+}
+
+.btn-secondary:hover,
+.btn.btn-secondary:hover {
+    background: linear-gradient(135deg, #495057, #343a40) !important;
+    color: white !important;
 }
 
 /* ==================== NAVEGACIÓN FIJA ==================== */

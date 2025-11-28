@@ -43,11 +43,24 @@ async function initSidebar() {
         }
     }
 
-    // Actualizar logo de compañía si existe
+    // Actualizar logo de compañía si existe y es válido
     const logoCompania = localStorage.getItem('logoCompania');
     const sidebarLogo = document.querySelector('.sidebar-logo');
-    if (logoCompania && sidebarLogo) {
-        sidebarLogo.innerHTML = `<img src="${logoCompania}" alt="Logo" style="width: 70%; height: 70%; object-fit: contain; border-radius: 8px; margin: auto;">`;
+    if (logoCompania && sidebarLogo && logoCompania.startsWith('data:image')) {
+        // Solo usar si es una imagen base64 válida
+        const img = document.createElement('img');
+        img.src = logoCompania;
+        img.alt = "Logo";
+        img.style.cssText = "width: 70%; height: 70%; object-fit: contain; border-radius: 8px; margin: auto;";
+        img.onerror = () => {
+            // Si falla la carga, volver al emoji
+            sidebarLogo.innerHTML = '🚒';
+        };
+        sidebarLogo.innerHTML = '';
+        sidebarLogo.appendChild(img);
+    } else if (sidebarLogo) {
+        // Asegurar que tenga el emoji por defecto
+        sidebarLogo.innerHTML = '🚒';
     }
 
     // Actualizar info de usuario en sidebar

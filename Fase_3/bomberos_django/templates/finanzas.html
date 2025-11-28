@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Proyecto SEIS - Sistema Financiero</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js\' %}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <link rel="stylesheet" href="{% static 'css/global-profesional.css' %}">
     <link rel="stylesheet" href="{% static 'css/finanzas.css' %}">
     <link rel="stylesheet" href="{% static 'css/botones-uniformes.css' %}?v=1">
@@ -15,7 +15,6 @@
     <div class="page-container finanzas-page">
         <div class="container">
             <div class="page-header finanzas-header">
-                <h2> SISTEMA DE GESTIÓN FINANCIERA</h2>
                 <h2>💰 SISTEMA DE GESTIÓN FINANCIERA</h2>
                 <p>Control de Ingresos y Egresos de la Compañía</p>
             </div>
@@ -268,23 +267,7 @@
                 </div>
             </div>
         </div>
-        
-        <div class="contador">
-            Total de movimientos: <strong id="totalMovimientos">0</strong>
-            <span id="resultadosFiltrados" style="display: none;"> (filtrados de <span id="totalOriginal">0</span>)</span>
-        </div>
-        
-        <div id="listaMovimientos"></div>
-        <div id="paginationControlsMovimientos"></div>
     </div>
-            <div class="navigation-buttons">
-                <button type="button" class="btn btn-volver" onclick="finanzasSistema.volverAlSistema()">
-                    ← Regresar al Sistema Principal
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
 
 <script src="{% static 'js/auth.js' %}"></script>
 <script src="{% static 'js/utils.js' %}"></script>
@@ -293,3 +276,4 @@
 <script src="{% static 'js/print-global.js' %}?v=1"></script>
 </body>
 </html>
+

@@ -30,6 +30,9 @@ class SistemaCuotasDjango {
             precioRegular: 5000,
             precioEstudiante: 3000
         };
+        // Paginación
+        this.paginaActual = 1;
+        this.itemsPorPagina = 10;
         this.init();
     }
 
@@ -461,7 +464,14 @@ class SistemaCuotasDjango {
             return;
         }
 
-        lista.innerHTML = pagosBombero.map(pago => `
+        // Calcular paginación
+        const totalPaginas = Math.ceil(pagosBombero.length / this.itemsPorPagina);
+        const inicio = (this.paginaActual - 1) * this.itemsPorPagina;
+        const fin = inicio + this.itemsPorPagina;
+        const pagosPaginados = pagosBombero.slice(inicio, fin);
+
+        // Renderizar items paginados
+        let html = pagosPaginados.map(pago => `
             <div class="pago-card">
                 <div class="pago-header">
                     <div>
@@ -477,6 +487,59 @@ class SistemaCuotasDjango {
                 </div>
             </div>
         `).join('');
+
+        // Agregar controles de paginación si hay más de una página
+        if (totalPaginas > 1) {
+            html += `
+                <div class="paginacion-container" style="display: flex; justify-content: center; align-items: center; gap: 10px; margin-top: 20px; padding: 15px; background: #f5f5f5; border-radius: 8px;">
+                    <button class="btn btn-sm" onclick="cuotasSistemaDjango.irAPagina(1)" ${this.paginaActual === 1 ? 'disabled' : ''} style="padding: 8px 12px;">
+                        ⏮️ Primera
+                    </button>
+                    <button class="btn btn-sm" onclick="cuotasSistemaDjango.paginaAnterior()" ${this.paginaActual === 1 ? 'disabled' : ''} style="padding: 8px 12px;">
+                        ◀️ Anterior
+                    </button>
+                    <span style="padding: 8px 16px; background: white; border-radius: 6px; font-weight: bold;">
+                        Página ${this.paginaActual} de ${totalPaginas}
+                    </span>
+                    <button class="btn btn-sm" onclick="cuotasSistemaDjango.paginaSiguiente()" ${this.paginaActual === totalPaginas ? 'disabled' : ''} style="padding: 8px 12px;">
+                        Siguiente ▶️
+                    </button>
+                    <button class="btn btn-sm" onclick="cuotasSistemaDjango.irAPagina(${totalPaginas})" ${this.paginaActual === totalPaginas ? 'disabled' : ''} style="padding: 8px 12px;">
+                        Última ⏭️
+                    </button>
+                </div>
+                <div style="text-align: center; color: #666; font-size: 0.9rem; margin-top: 10px;">
+                    Mostrando ${inicio + 1}-${Math.min(fin, pagosBombero.length)} de ${pagosBombero.length} pagos
+                </div>
+            `;
+        }
+
+        lista.innerHTML = html;
+    }
+
+    // Métodos de paginación
+    paginaAnterior() {
+        if (this.paginaActual > 1) {
+            this.paginaActual--;
+            this.renderizarHistorialCuotas();
+        }
+    }
+
+    paginaSiguiente() {
+        const pagosBombero = this.pagosCuotas.filter(p => {
+            const voluntarioId = p.voluntario || p.voluntario_id;
+            return voluntarioId == this.bomberoActual.id;
+        });
+        const totalPaginas = Math.ceil(pagosBombero.length / this.itemsPorPagina);
+        if (this.paginaActual < totalPaginas) {
+            this.paginaActual++;
+            this.renderizarHistorialCuotas();
+        }
+    }
+
+    irAPagina(pagina) {
+        this.paginaActual = pagina;
+        this.renderizarHistorialCuotas();
     }
 
     renderizarTodo() {

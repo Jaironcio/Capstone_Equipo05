@@ -9,6 +9,9 @@ class SistemaPagarBeneficioDjango {
         this.asignacionActual = null;
         this.pagosRealizados = [];
         this.logoBase64 = null;
+        // Paginación
+        this.paginaActual = 1;
+        this.itemsPorPagina = 10;
         this.init();
     }
 
@@ -281,9 +284,17 @@ class SistemaPagarBeneficioDjango {
             `;
             return;
         }
+
+        // Calcular paginación
+        const totalPaginas = Math.ceil(this.pagosRealizados.length / this.itemsPorPagina);
+        if (this.paginaActual > totalPaginas) this.paginaActual = 1;
+        
+        const inicio = (this.paginaActual - 1) * this.itemsPorPagina;
+        const fin = inicio + this.itemsPorPagina;
+        const pagosPaginados = this.pagosRealizados.slice(inicio, fin);
         
         let html = '';
-        this.pagosRealizados.forEach(pago => {
+        pagosPaginados.forEach(pago => {
             html += `
                 <div class="pago-item" style="background: white; padding: 15px; margin: 10px 0; border-radius: 8px; border-left: 4px solid ${pago.tipo_pago === 'extra' ? '#f57c00' : '#28a745'}; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
                     <div style="display: flex; justify-content: space-between; align-items: start;">
@@ -304,8 +315,55 @@ class SistemaPagarBeneficioDjango {
                 </div>
             `;
         });
+
+        // Agregar controles de paginación si hay más de una página
+        if (totalPaginas > 1) {
+            html += `
+                <div class="paginacion-container" style="display: flex; justify-content: center; align-items: center; gap: 10px; margin-top: 20px; padding: 15px; background: #f5f5f5; border-radius: 8px;">
+                    <button onclick="sistemaPagarBeneficio.irAPagina(1)" ${this.paginaActual === 1 ? 'disabled' : ''} style="padding: 8px 12px; background: #6c757d; color: white; border: none; border-radius: 6px; cursor: pointer;">
+                        ⏮️ Primera
+                    </button>
+                    <button onclick="sistemaPagarBeneficio.paginaAnterior()" ${this.paginaActual === 1 ? 'disabled' : ''} style="padding: 8px 12px; background: #6c757d; color: white; border: none; border-radius: 6px; cursor: pointer;">
+                        ◀️ Anterior
+                    </button>
+                    <span style="padding: 8px 16px; background: white; border-radius: 6px; font-weight: bold; color: #333;">
+                        Página ${this.paginaActual} de ${totalPaginas}
+                    </span>
+                    <button onclick="sistemaPagarBeneficio.paginaSiguiente()" ${this.paginaActual === totalPaginas ? 'disabled' : ''} style="padding: 8px 12px; background: #6c757d; color: white; border: none; border-radius: 6px; cursor: pointer;">
+                        Siguiente ▶️
+                    </button>
+                    <button onclick="sistemaPagarBeneficio.irAPagina(${totalPaginas})" ${this.paginaActual === totalPaginas ? 'disabled' : ''} style="padding: 8px 12px; background: #6c757d; color: white; border: none; border-radius: 6px; cursor: pointer;">
+                        Última ⏭️
+                    </button>
+                </div>
+                <div style="text-align: center; color: #666; font-size: 0.9rem; margin-top: 10px;">
+                    Mostrando ${inicio + 1}-${Math.min(fin, this.pagosRealizados.length)} de ${this.pagosRealizados.length} pagos
+                </div>
+            `;
+        }
         
         contenedor.innerHTML = html;
+    }
+
+    // Métodos de paginación
+    paginaAnterior() {
+        if (this.paginaActual > 1) {
+            this.paginaActual--;
+            this.renderizarHistorialPagos();
+        }
+    }
+
+    paginaSiguiente() {
+        const totalPaginas = Math.ceil(this.pagosRealizados.length / this.itemsPorPagina);
+        if (this.paginaActual < totalPaginas) {
+            this.paginaActual++;
+            this.renderizarHistorialPagos();
+        }
+    }
+
+    irAPagina(pagina) {
+        this.paginaActual = pagina;
+        this.renderizarHistorialPagos();
     }
 
     actualizarResumenDeudas() {

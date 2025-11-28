@@ -11,6 +11,9 @@ class HistorialAsistencias {
         this.filtroAsamblea = '';
         this.filtroEjercicio = '';
         this.ciclosAsistencias = new CiclosAsistencias();
+        // Paginación
+        this.paginaActual = 1;
+        this.itemsPorPagina = 10;
         this.init();
     }
 
@@ -305,7 +308,62 @@ class HistorialAsistencias {
             return;
         }
 
-        container.innerHTML = asistenciasFiltradas.slice(0, 20).map(a => this.renderizarCard(a)).join('');
+        // Calcular paginación
+        const totalPaginas = Math.ceil(asistenciasFiltradas.length / this.itemsPorPagina);
+        // Asegurar que la página actual sea válida
+        if (this.paginaActual > totalPaginas) this.paginaActual = 1;
+        
+        const inicio = (this.paginaActual - 1) * this.itemsPorPagina;
+        const fin = inicio + this.itemsPorPagina;
+        const asistenciasPaginadas = asistenciasFiltradas.slice(inicio, fin);
+
+        let html = asistenciasPaginadas.map(a => this.renderizarCard(a)).join('');
+
+        // Agregar controles de paginación si hay más de una página
+        if (totalPaginas > 1) {
+            html += `
+                <div class="paginacion-container" style="display: flex; justify-content: center; align-items: center; gap: 10px; margin-top: 20px; padding: 15px; background: rgba(255,255,255,0.1); border-radius: 8px;">
+                    <button class="btn btn-sm" onclick="historialAsistencias.irAPagina(1)" ${this.paginaActual === 1 ? 'disabled' : ''} style="padding: 8px 12px; background: #6c757d; color: white; border: none; border-radius: 6px; cursor: pointer;">
+                        ⏮️ Primera
+                    </button>
+                    <button class="btn btn-sm" onclick="historialAsistencias.paginaAnterior()" ${this.paginaActual === 1 ? 'disabled' : ''} style="padding: 8px 12px; background: #6c757d; color: white; border: none; border-radius: 6px; cursor: pointer;">
+                        ◀️ Anterior
+                    </button>
+                    <span style="padding: 8px 16px; background: white; border-radius: 6px; font-weight: bold; color: #333;">
+                        Página ${this.paginaActual} de ${totalPaginas}
+                    </span>
+                    <button class="btn btn-sm" onclick="historialAsistencias.paginaSiguiente()" ${this.paginaActual === totalPaginas ? 'disabled' : ''} style="padding: 8px 12px; background: #6c757d; color: white; border: none; border-radius: 6px; cursor: pointer;">
+                        Siguiente ▶️
+                    </button>
+                    <button class="btn btn-sm" onclick="historialAsistencias.irAPagina(${totalPaginas})" ${this.paginaActual === totalPaginas ? 'disabled' : ''} style="padding: 8px 12px; background: #6c757d; color: white; border: none; border-radius: 6px; cursor: pointer;">
+                        Última ⏭️
+                    </button>
+                </div>
+                <div style="text-align: center; color: #ccc; font-size: 0.9rem; margin-top: 10px;">
+                    Mostrando ${inicio + 1}-${Math.min(fin, asistenciasFiltradas.length)} de ${asistenciasFiltradas.length} registros
+                </div>
+            `;
+        }
+
+        container.innerHTML = html;
+    }
+
+    // Métodos de paginación
+    paginaAnterior() {
+        if (this.paginaActual > 1) {
+            this.paginaActual--;
+            this.renderizarAsistencias();
+        }
+    }
+
+    paginaSiguiente() {
+        this.paginaActual++;
+        this.renderizarAsistencias();
+    }
+
+    irAPagina(pagina) {
+        this.paginaActual = pagina;
+        this.renderizarAsistencias();
     }
 
     renderizarCard(asistencia) {

@@ -212,16 +212,45 @@ class SistemaBeneficiosDjango {
         
         const formData = new FormData(event.target);
         
+        // Validar campos requeridos
+        const nombre = formData.get('nombreBeneficio');
+        const fechaEvento = formData.get('fechaEvento');
+        const precioTarjeta = parseInt(formData.get('precioTarjeta')) || 0;
+        
+        if (!nombre || nombre.trim() === '') {
+            this.mostrarNotificacion('❌ Debe ingresar el nombre del beneficio', 'error');
+            return;
+        }
+        
+        if (!fechaEvento) {
+            this.mostrarNotificacion('❌ Debe seleccionar la fecha del evento', 'error');
+            return;
+        }
+        
+        if (precioTarjeta <= 0) {
+            this.mostrarNotificacion('❌ El precio de la tarjeta debe ser mayor a 0', 'error');
+            return;
+        }
+        
         const payload = {
-            nombre: formData.get('nombreBeneficio'),
+            nombre: nombre.trim(),
             descripcion: formData.get('descripcionBeneficio') || '',
-            fecha_evento: formData.get('fechaEvento'),
-            precio_tarjeta: parseInt(formData.get('precioTarjeta')),
-            tarjetas_voluntarios: parseInt(formData.get('tarjetasVoluntarios')),
-            tarjetas_honorarios_cia: parseInt(formData.get('tarjetasHonorariosCia')),
-            tarjetas_honorarios_cuerpo: parseInt(formData.get('tarjetasHonorariosCuerpo')),
-            tarjetas_insignes: parseInt(formData.get('tarjetasInsignes'))
+            fecha_evento: fechaEvento,
+            precio_tarjeta: precioTarjeta,
+            tarjetas_voluntarios: parseInt(formData.get('tarjetasVoluntarios')) || 0,
+            tarjetas_honorarios_cia: parseInt(formData.get('tarjetasHonorariosCia')) || 0,
+            tarjetas_honorarios_cuerpo: parseInt(formData.get('tarjetasHonorariosCuerpo')) || 0,
+            tarjetas_insignes: parseInt(formData.get('tarjetasInsignes')) || 0
         };
+        
+        // Validar que al menos una categoría tenga tarjetas
+        if (payload.tarjetas_voluntarios === 0 && 
+            payload.tarjetas_honorarios_cia === 0 && 
+            payload.tarjetas_honorarios_cuerpo === 0 && 
+            payload.tarjetas_insignes === 0) {
+            this.mostrarNotificacion('❌ Debe asignar tarjetas a al menos una categoría', 'error');
+            return;
+        }
 
         try {
             this.mostrarNotificacion('Creando beneficio...', 'info');

@@ -60,27 +60,27 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'config.wsgi.application'
 
-# Database - SQLite por ahora (cambiar a MySQL después)
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
-
-# Para cambiar a MySQL, comentar lo de arriba y descomentar esto:
-"""
+# Database - MySQL (migrado de SQLite)
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'bomberos_db',
         'USER': 'root',
-        'PASSWORD': 'tu_password',
+        'PASSWORD': 'admin123',
         'HOST': 'localhost',
-        'PORT': '3306',
+        'PORT': '3307',
         'OPTIONS': {
             'charset': 'utf8mb4',
         }
+    }
+}
+
+# SQLite anterior (deshabilitado):
+"""
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
 """

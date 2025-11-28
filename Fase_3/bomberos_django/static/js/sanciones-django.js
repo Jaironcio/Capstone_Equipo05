@@ -3,6 +3,9 @@ class SistemaSanciones {
     constructor() {
         this.bomberoActual = null;
         this.sanciones = [];
+        // Paginación
+        this.paginaActual = 1;
+        this.itemsPorPagina = 10;
         this.init();
     }
 
@@ -542,7 +545,15 @@ class SistemaSanciones {
             return;
         }
 
-        listado.innerHTML = this.sanciones.map(sancion => {
+        // Calcular paginación
+        const totalPaginas = Math.ceil(this.sanciones.length / this.itemsPorPagina);
+        if (this.paginaActual > totalPaginas) this.paginaActual = 1;
+        
+        const inicio = (this.paginaActual - 1) * this.itemsPorPagina;
+        const fin = inicio + this.itemsPorPagina;
+        const sancionesPaginadas = this.sanciones.slice(inicio, fin);
+
+        let html = sancionesPaginadas.map(sancion => {
             const tipoInfo = this.obtenerInfoTipoSancion(sancion.tipo_sancion);
             const fechaRegistro = sancion.created_at ? new Date(sancion.created_at).toLocaleDateString('es-CL') : 'N/A';
             
@@ -627,6 +638,55 @@ class SistemaSanciones {
                 </div>
             `;
         }).join('');
+
+        // Agregar controles de paginación si hay más de una página
+        if (totalPaginas > 1) {
+            html += `
+                <div class="paginacion-container" style="display: flex; justify-content: center; align-items: center; gap: 10px; margin-top: 20px; padding: 15px; background: #f5f5f5; border-radius: 8px;">
+                    <button onclick="sancionesSistema.irAPagina(1)" ${this.paginaActual === 1 ? 'disabled' : ''} style="padding: 8px 12px; background: #6c757d; color: white; border: none; border-radius: 6px; cursor: pointer;">
+                        ⏮️ Primera
+                    </button>
+                    <button onclick="sancionesSistema.paginaAnterior()" ${this.paginaActual === 1 ? 'disabled' : ''} style="padding: 8px 12px; background: #6c757d; color: white; border: none; border-radius: 6px; cursor: pointer;">
+                        ◀️ Anterior
+                    </button>
+                    <span style="padding: 8px 16px; background: white; border-radius: 6px; font-weight: bold; color: #333;">
+                        Página ${this.paginaActual} de ${totalPaginas}
+                    </span>
+                    <button onclick="sancionesSistema.paginaSiguiente()" ${this.paginaActual === totalPaginas ? 'disabled' : ''} style="padding: 8px 12px; background: #6c757d; color: white; border: none; border-radius: 6px; cursor: pointer;">
+                        Siguiente ▶️
+                    </button>
+                    <button onclick="sancionesSistema.irAPagina(${totalPaginas})" ${this.paginaActual === totalPaginas ? 'disabled' : ''} style="padding: 8px 12px; background: #6c757d; color: white; border: none; border-radius: 6px; cursor: pointer;">
+                        Última ⏭️
+                    </button>
+                </div>
+                <div style="text-align: center; color: #666; font-size: 0.9rem; margin-top: 10px;">
+                    Mostrando ${inicio + 1}-${Math.min(fin, this.sanciones.length)} de ${this.sanciones.length} sanciones
+                </div>
+            `;
+        }
+
+        listado.innerHTML = html;
+    }
+
+    // Métodos de paginación
+    paginaAnterior() {
+        if (this.paginaActual > 1) {
+            this.paginaActual--;
+            this.renderizarSanciones();
+        }
+    }
+
+    paginaSiguiente() {
+        const totalPaginas = Math.ceil(this.sanciones.length / this.itemsPorPagina);
+        if (this.paginaActual < totalPaginas) {
+            this.paginaActual++;
+            this.renderizarSanciones();
+        }
+    }
+
+    irAPagina(pagina) {
+        this.paginaActual = pagina;
+        this.renderizarSanciones();
     }
 
     obtenerInfoTipoSancion(tipo) {
